@@ -4,16 +4,17 @@
   "description": "jQuery Control",
   "version": "0.0.0",
   "devDependencies": {
+    "browserify": "^17.0.0",
+    "browserify-shim": "^3.8.14",
     "del": "^5.1.0",
     "gulp": "^4.0.2",
-    "browserify": "^16.2.2",
-    "browserify-shim": "^3.8.14",
-    "gulp-browserify": "^0.5.1",
     "gulp-concat": "^2.6.1",
     "gulp-jsmin": "^0.1.5",
     "gulp-rename": "^2.0.0",
     "gulp-sourcemaps": "^2.6.4",
-    "gulp-uglify": "^3.0.0"
+    "gulp-uglify": "^3.0.0",
+    "vinyl-buffer": "^1.0.1",
+    "vinyl-source-stream": "^2.0.0"
   },
   "dependencies": {
     "filewalker": "^0.1.3",

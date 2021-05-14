@@ -3,8 +3,11 @@ var uglify     = require('gulp-uglify');
 var rename     = require('gulp-rename');
 var del        = require('del');
 var sourcemaps = require('gulp-sourcemaps');
-var browserify = require('gulp-browserify');
 var view = require('./view');
+
+var browserify = require('browserify');
+var vinylSource = require('vinyl-source-stream');
+var vinylBuffer = require('vinyl-buffer');
 
 gulp.task('del', function(next){
     del.sync(['dist']);
@@ -27,15 +30,16 @@ gulp.task('views', function(done){
 });
 
 gulp.task('build', function(){
-    return gulp.src(['src/build.js'])
-        .pipe(browserify())
-        .pipe(rename('jquery.control.js'))
+    return browserify(['src/build.js'],{})
+        .bundle()
+        .pipe(vinylSource('jquery.control.js'))
+        .pipe(vinylBuffer())
         .pipe(gulp.dest('dist'))
         .pipe(sourcemaps.init())
         .pipe(uglify())
         .pipe(rename({extname:'.min.js'}))
         .pipe(sourcemaps.write('./'))
-        .pipe(gulp.dest('dist'));
+        .pipe(gulp.dest('dist'))
 });
 
 gulp.task('watcher', function(){
