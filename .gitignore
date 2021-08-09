@@ -2,5 +2,3 @@
 examples/
 node_modules/
 package-lock.json
-# Project exclude paths
-/dist/
