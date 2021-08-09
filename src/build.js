@@ -77,8 +77,14 @@ $.locale = Locale;
 /**
  * @memberOf $
  * @property ejs
+ * @deprecated
  */
 $.ejs = View;
+/**
+ * @memberOf $
+ * @property view
+ */
+$.view = View;
 /**
  *
  */
