@@ -81,11 +81,6 @@ $.locale = Locale;
  */
 $.ejs = View;
 /**
- * @memberOf $
- * @property view
- */
-$.view = View;
-/**
  *
  */
 $.fn.extend({
