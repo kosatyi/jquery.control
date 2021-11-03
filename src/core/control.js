@@ -18,6 +18,7 @@ var compareArrays = function(a1,a2){
  * @type {Class|*}
  */
 var Control = Class.extend({
+    addControlClassName: true,
     window: $(window),
     document: $(document),
     /**
@@ -47,7 +48,7 @@ var Control = Class.extend({
         return this;
     },
     /**
-     *
+     * @constructor
      * @param element
      */
     init: function (element) {
@@ -67,7 +68,9 @@ var Control = Class.extend({
      */
     initElement: function (element) {
         this.element = $(this._element_ = element);
-        this.element.addClass(this.name.split('.').join('-'));
+        if( this.addControlClassName === true ){
+            this.element.addClass(this.name.split('.').join('-'));
+        }
     },
     /**
      *
