@@ -179,6 +179,7 @@ var Control = Class.extend({
         if (!this._idle_timeout_) this._idle_timeout_ = {};
         clearTimeout(this._idle_timeout_[callback]);
         delete this._idle_timeout_[callback];
+        if( time === false ) return this;
         this._idle_timeout_[callback] = setTimeout(this.proxy(callback), time);
         return this;
     },
