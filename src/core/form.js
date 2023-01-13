@@ -1,14 +1,14 @@
-var $ = require('jquery');
+const $ = require('jquery');
 /**
  *
  * @type {function(*, *=, *=): {}}
  */
-var deparam = require('../utils/deparam');
+const deparam = require('../utils/deparam');
 /**
  *
  * @type {RegExp}
  */
-var breaker = /[^\[\]]+|\[\]$/g;
+const breaker = /[^\[\]]+|\[\]$/g;
 
 /**
  *
@@ -36,7 +36,7 @@ function attr(data, attr) {
  * @returns {*}
  */
 function clean(obj) {
-    var prop;
+    let prop;
     for (prop in obj) {
         if (obj.hasOwnProperty(prop)) {
             if (obj[prop].length === 0) {
@@ -57,10 +57,10 @@ function clean(obj) {
  * @returns {*}
  */
 function getFormData(filter,coerce){
-    var form   = $.map(this.serializeArray(), function (field) {
+    let form   = $.map(this.serializeArray(), function (field) {
         return [field.name, encodeURIComponent(field.value)].join('=');
     }).join('&');
-    var params = deparam(form, coerce, false);
+    let params = deparam(form, coerce, false);
     return filter === true ? clean(params) : params;
 }
 
@@ -71,9 +71,9 @@ function getFormData(filter,coerce){
  */
 function setFormData( data ) {
     this.find('[name]').each(function(){
-        var current = $(this);
-        var parts = current.attr('name').match(breaker);
-        var value = attr(data,parts.join('.'));
+        let current = $(this);
+        let parts = current.attr('name').match(breaker);
+        let value = attr(data,parts.join('.'));
         if (value) {
             if (current.is(":radio")) {
                 if (current.val() === value) {

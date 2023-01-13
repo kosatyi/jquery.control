@@ -1,17 +1,17 @@
 function deparam(params, coerce, spaces) {
-    var obj = {},
+    let obj = {},
         coerce_types = {'true': !0, 'false': !1, 'null': null};
     if (spaces) params = params.replace(/\+/g, ' ');
     params.split('&').forEach(function (v) {
-        var param = v.split('='),
+        let param = v.split('='),
             key = decodeURIComponent(param[0]),
             val,
             cur = obj,
             i = 0,
             keys = key.split(']['),
             keys_last = keys.length - 1;
-        if (/\[/.test(keys[0]) && /\]$/.test(keys[keys_last])) {
-            keys[keys_last] = keys[keys_last].replace(/\]$/, '');
+        if (/\[/.test(keys[0]) && /]$/.test(keys[keys_last])) {
+            keys[keys_last] = keys[keys_last].replace(/]$/, '');
             keys = keys.shift().split('[').concat(keys);
             keys_last = keys.length - 1;
         } else {

@@ -1,16 +1,16 @@
-var $ = require('jquery');
-var Class = require('./class');
+const $ = require('jquery');
+const Class = require('./class');
 /**
  *
  * @type {{}}
  */
-var classes = {};
+const classes = {};
 /**
  *
  * @param value
  * @returns {*}
  */
-var isArray = function (value) {
+const isArray = function (value) {
     return $.isArray(value);
 };
 /**
@@ -18,7 +18,7 @@ var isArray = function (value) {
  * @param value
  * @returns {*}
  */
-var isPlainObject = function (value) {
+const isPlainObject = function (value) {
     return $.isPlainObject(value);
 };
 /**
@@ -27,7 +27,7 @@ var isPlainObject = function (value) {
  * @param callback
  * @param thisArg
  */
-var forEach = function (object, callback, thisArg) {
+const forEach = function (object, callback, thisArg) {
     var prop, context = thisArg || callback;
     for (prop in object) {
         if (object.hasOwnProperty(prop)) {
@@ -40,7 +40,7 @@ var forEach = function (object, callback, thisArg) {
  * @param obj
  * @returns {{}}
  */
-var sortObject = function (obj) {
+const sortObject = function (obj) {
     return Object.keys(obj).sort().reduce(function (result, key) {
         result[key] = obj[key];
         return result;

@@ -1,13 +1,13 @@
-var $     = require('jquery');
-var Class = require('./class');
-var classes  = {};
-var controls = [];
-var ATTR = 'control';
-var ATTR_SELECTOR = '['+ ATTR +']';
-var arrayStringify = function(a){
+const $     = require('jquery');
+const Class = require('./class');
+const classes  = {};
+const controls = [];
+const ATTR = 'control';
+const ATTR_SELECTOR = '['+ ATTR +']';
+const arrayStringify = function(a){
     return JSON.stringify(a.slice().sort());
 };
-var compareArrays = function(a1,a2){
+const compareArrays = function(a1,a2){
     return arrayStringify(a1) === arrayStringify(a2);
 };
 /**
@@ -17,7 +17,7 @@ var compareArrays = function(a1,a2){
  * @property {jQuery} document
  * @type {Class|*}
  */
-var Control = Class.extend({
+const Control = Class.extend({
     addControlClassName: true,
     window: $(window),
     document: $(document),
@@ -42,7 +42,7 @@ var Control = Class.extend({
      * @private
      */
     _event_:function(type,params){
-        var args = this.toArray(params);
+        let args = this.toArray(params);
         args = this._addProxy_(2,3,args);
         this.element[type].apply(this.element, args);
         return this;

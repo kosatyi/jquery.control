@@ -1,13 +1,13 @@
-var gulp       = require('gulp');
-var uglify     = require('gulp-uglify');
-var rename     = require('gulp-rename');
-var del        = require('del');
-var sourcemaps = require('gulp-sourcemaps');
-var view = require('./view');
+const gulp       = require('gulp');
+const uglify     = require('gulp-uglify');
+const rename     = require('gulp-rename');
+const del        = require('del');
+const sourcemaps = require('gulp-sourcemaps');
+const view = require('./view');
 
-var browserify = require('browserify');
-var vinylSource = require('vinyl-source-stream');
-var vinylBuffer = require('vinyl-buffer');
+const browserify = require('browserify');
+const vinylSource = require('vinyl-source-stream');
+const vinylBuffer = require('vinyl-buffer');
 
 gulp.task('del', function(next){
     del.sync(['dist']);
@@ -31,6 +31,7 @@ gulp.task('views', function(done){
 
 gulp.task('build', function(){
     return browserify(['src/build.js'],{})
+        .transform("babelify", {presets: ["@babel/preset-env"]})
         .bundle()
         .pipe(vinylSource('jquery.control.js'))
         .pipe(vinylBuffer())

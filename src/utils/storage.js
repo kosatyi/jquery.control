@@ -19,6 +19,6 @@ BackupStorage.prototype = {
     }
 };
 
-var StorageProvider = ('localStorage' in global && global['localStorage']) ? global['localStorage'] : new BackupStorage;
+const StorageProvider = ('localStorage' in global && global['localStorage']) ? global['localStorage'] : new BackupStorage;
 
 module.exports = StorageProvider;

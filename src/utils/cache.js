@@ -1,8 +1,5 @@
-var $ = require('jquery');
-
-var Storage = require('./storage');
-
-var Cache = {
+const Storage = require('./storage');
+const Cache = {
     set: function (key, data, ttl) {
         ttl = new Date().getTime() + (ttl * 1000 * 60);
         try {

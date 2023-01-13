@@ -1,15 +1,15 @@
-var $ = require('jquery');
-var Class = require('./class');
-var Model = require('./model');
-var View = require('./view');
-var Control = require('./control');
-var Location = require('./location');
+const $ = require('jquery');
+const Class = require('./class');
+const Model = require('./model');
+const View = require('./view');
+const Control = require('./control');
+const Location = require('./location');
 /**
  *
  * @param path
  * @returns {RegExp}
  */
-var pathToRegexp = function (path) {
+const pathToRegexp = function (path) {
     var result, keys = [], parse = function (_, slsh, format, key, capture, opt) {
         keys.push({name: key, optional: !!opt});
         slsh = slsh || '';
@@ -34,7 +34,7 @@ var pathToRegexp = function (path) {
  * @param path
  * @returns {{}|boolean}
  */
-var pathMatch = function (regexp, path) {
+const pathMatch = function (regexp, path) {
     var key;
     var match = regexp.exec(path);
     var params = {};
@@ -48,7 +48,7 @@ var pathMatch = function (regexp, path) {
  *
  * @type {{hashchange: listener.hashchange}}
  */
-var listener = {
+const listener = {
     hashchange: function (run) {
         Location.bind(function () {
             run(this.path());
@@ -208,7 +208,7 @@ Class.createClass('route', {
  * @property request
  * @property response
  */
-var Router = Class.createClass('router', {
+const Router = Class.createClass('router', {
     init: function () {
         this._before_ = [];
         this._after_  = [];

@@ -1,10 +1,10 @@
-var $ = require('jquery');
+const $ = require('jquery');
 
-var deparam = require('../utils/deparam');
+const deparam = require('../utils/deparam');
 
-var skip  = false;
+let skip  = false;
 
-var instance = {
+const instance = {
     prefix: '#',
     type: 'hash',
     event:'hashchange.location',
@@ -15,7 +15,7 @@ var instance = {
         return this;
     },
     normalize: function (url) {
-        var prefix = this.prefix;
+        let prefix = this.prefix;
         if (url.indexOf('http') === 0) prefix = '';
         else if (url.indexOf('#') === 0) prefix = '';
         return [prefix, url].join('');
@@ -51,8 +51,8 @@ var instance = {
         }
     },
     json: function(value,replace,silent){
-        var href  = this.href();
-        var chunk = href.split('#')[0].split('?')[1] || '{}';
+        let href  = this.href();
+        let chunk = href.split('#')[0].split('?')[1] || '{}';
         if (arguments.length) {
             value = value ? [this.part(0),JSON.stringify(value)].join('?') : this.part(0);
             this[replace ? 'replace' : 'assign'](value, silent);
@@ -90,7 +90,7 @@ var instance = {
         return this.href().indexOf(str) === index;
     },
     change: function () {
-        var index;
+        let index;
         if (skip === true) {
             return skip = false;
         }

@@ -1,14 +1,14 @@
-var $ = require('jquery');
+const $ = require('jquery');
 /**
  *
  * @type {{}}
  */
-var cache = {};
+const cache = {};
 /**
  *
- * @type {{defaults: string, current: string, path: string, file: string, data: {}}}
+ * @type {object}
  */
-var Locale = {
+const Locale = {
     defaults: 'en',
     current: 'en',
     path: 'locales/',

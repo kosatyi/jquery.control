@@ -1,12 +1,12 @@
-var $        = require('jquery');
-var Class    = require('./core/class');
-var Location = require('./core/location');
-var Control  = require('./core/control');
-var Model    = require('./core/model');
-var Locale   = require('./plugins/locale');
-var Form     = require('./core/form');
-var Router   = require('./core/router');
-var View     = require('./core/view');
+const $        = require('jquery');
+const Class    = require('./core/class');
+const Location = require('./core/location');
+const Control  = require('./core/control');
+const Model    = require('./core/model');
+const Locale   = require('./plugins/locale');
+const Form     = require('./core/form');
+const Router   = require('./core/router');
+const View     = require('./core/view');
 /**
  * @memberOf $
  * @property Class

@@ -1,24 +1,24 @@
-var $ = require('jquery');
+const $ = require('jquery');
 
-var Class = require('./class');
-var Control = require("./control");
+const Class = require('./class');
+const Control = require("./control");
 
-var listPreload = {};
-var listView = {};
-var listAttr = {};
-var listProp = {};
-var listCache = {};
+const listPreload = {};
+const listView = {};
+const listAttr = {};
+const listProp = {};
+const listCache = {};
 
-var settings = {
+const settings = {
     evaluate: /<%([\s\S]+?)%>/g,
     interpolate: /<%=([\s\S]+?)%>/g,
     escape: /<%-([\s\S]+?)%>/g,
     variable: false
 };
 
-var noMatch = /(.)^/;
+const noMatch = /(.)^/;
 
-var escapes = {
+const escapes = {
     "'": "'",
     '\\': '\\',
     '\r': 'r',
@@ -28,9 +28,9 @@ var escapes = {
     '\u2029': 'u2029'
 };
 
-var escaper = /[\\'\r\n\t\u2028\u2029]/g;
+const escaper = /[\\'\r\n\t\u2028\u2029]/g;
 
-var htmlEntities = {
+const htmlEntities = {
     '&': '&amp;',
     '<': '&lt;',
     '>': '&gt;',
@@ -38,14 +38,14 @@ var htmlEntities = {
     "'": '&#x27;'
 };
 
-var entityRe = new RegExp('[&<>"\']', 'g');
+const entityRe = new RegExp('[&<>"\']', 'g');
 /**
  *
  * @param object
  * @param callback
  * @param thisArg
  */
-var forEach = function (object, callback, thisArg) {
+const forEach = function (object, callback, thisArg) {
     var prop, context = thisArg || callback;
     for (prop in object) {
         if (object.hasOwnProperty(prop)) {
@@ -59,7 +59,7 @@ var forEach = function (object, callback, thisArg) {
  * @param params
  * @return {string}
  */
-var stringFormat = function (value, params) {
+const stringFormat = function (value, params) {
     return (value || '').replace(/{(.+?)}/g, function (match, prop) {
         return typeof (params[prop]) != 'undefined' ? params[prop] : match;
     });
@@ -69,7 +69,7 @@ var stringFormat = function (value, params) {
  *
  * @return {string}
  */
-var uid = function (ns) {
+const uid = function (ns) {
     var size = 1000000;
     var length = String(size).length - 1;
     var random = Math.abs(Math.random()) * size;
@@ -81,7 +81,7 @@ var uid = function (ns) {
  *
  * @param element
  */
-var mountNodes = function (element) {
+const mountNodes = function (element) {
     forEach(listAttr, function (data, id, item, node) {
         if ((item = element.getElementById(id)) === null) return false;
         node = document.createElement(data.tag);
@@ -96,7 +96,7 @@ var mountNodes = function (element) {
  *
  * @param element
  */
-var mountProps = function (element) {
+const mountProps = function (element) {
     forEach(listProp, function (item, attr) {
         var node = element.querySelector(item.selector);
         if (node === null) return;
@@ -112,7 +112,7 @@ var mountProps = function (element) {
  * @param string
  * @return {string}
  */
-var escapeExpr = function (string) {
+const escapeExpr = function (string) {
     if (string == null) return '';
     return ('' + string).replace(entityRe, function (match) {
         return htmlEntities[match];
@@ -123,7 +123,7 @@ var escapeExpr = function (string) {
  * @param string
  * @return {string}
  */
-var escapeString = function (string) {
+const escapeString = function (string) {
     if (string == null) return '';
     return ('' + string).replace(escaper, function (match) {
         return '\\' + escapes[match];
@@ -135,7 +135,7 @@ var escapeString = function (string) {
  * @param name
  * @return {function(*=): string}
  */
-var compile = function (text, name) {
+const compile = function (text, name) {
     var render;
     var matcher = new RegExp([
         (settings.escape || noMatch).source,
@@ -179,7 +179,7 @@ var compile = function (text, name) {
  * @param html
  * @return {DocumentFragment}
  */
-var fragment = function(html) {
+const fragment = function(html) {
     var template = document.createElement('template');
     if ('content' in template) {
         template.innerHTML = html;
@@ -199,7 +199,7 @@ var fragment = function(html) {
  * @name Template
  * @type {Class|*}
  */
-var template = Class.extend({
+const template = Class.extend({
     init: function (source, name) {
         this.source = resolver.source(source);
         this.compile(this.source, name);
@@ -226,20 +226,20 @@ var template = Class.extend({
  *
  * @type {string[]}
  */
-var defaultExtList  = ['ejs', 'html', 'svg', 'css', 'js'];
+const defaultExtList  = ['ejs', 'html', 'svg', 'css', 'js'];
 /**
  *
  * @param list
  * @return {RegExp}
  */
-var resolverExp = function(list){
+const resolverExp = function(list){
     return new RegExp('^(.+)(\\.)('+list.join('|')+')$');
 };
 /**
  *
  *
  */
-var resolver = {
+const resolver = {
     ext: defaultExtList,
     exp: resolverExp(defaultExtList),
     set: function(list){
@@ -267,7 +267,7 @@ var resolver = {
     }
 }
 
-var helpers = {
+const helpers = {
     /**
      * @memberOf window
      * @name $include

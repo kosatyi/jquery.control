@@ -1,12 +1,12 @@
-var classes = {};
+const classes = {};
 
-var init = false;
+let init = false;
 
-var fnTest = /xyz/.test(function () {
+const fnTest = /xyz/.test(function () {
     return 'xyz';
 }.toString()) ? /\b_super\b/ : /.*/;
 
-var superMethod = function(parent,name,method){
+const superMethod = function(parent,name,method){
     return function () {
         var temp = this._super, result;
         this._super = parent[name];
@@ -16,7 +16,7 @@ var superMethod = function(parent,name,method){
     };
 }
 
-var assign = function(target,instance){
+const assign = function(target,instance){
     var prop,proto,parent = target.prototype;
     init = true;
     proto = new target();
@@ -39,7 +39,7 @@ var assign = function(target,instance){
  * @name Class
  * @constructor
  */
-var Class = function(){
+const Class = function(){
 
 };
 
