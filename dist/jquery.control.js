@@ -85,7 +85,7 @@ module.exports = Class;
 
 var $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
 var Class = require('./class');
-var _require = require('./utils'),
+var _require = require('../utils'),
   compareArrays = _require.compareArrays,
   forEach = _require.forEach;
 var classes = {};
@@ -333,7 +333,7 @@ Control.initControls = initControls;
 module.exports = Control;
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./class":1,"./utils":7}],3:[function(require,module,exports){
+},{"../utils":11,"./class":1}],3:[function(require,module,exports){
 (function (global){(function (){
 "use strict";
 
@@ -437,7 +437,7 @@ module.exports = {
 };
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../utils/deparam":11}],4:[function(require,module,exports){
+},{"../utils/deparam":10}],4:[function(require,module,exports){
 (function (global){(function (){
 "use strict";
 
@@ -545,13 +545,13 @@ var instance = {
 module.exports = instance;
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../utils/deparam":11}],5:[function(require,module,exports){
+},{"../utils/deparam":10}],5:[function(require,module,exports){
 (function (global){(function (){
 "use strict";
 
 var $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
 var Class = require('./class');
-var _require = require('./utils'),
+var _require = require('../utils'),
   isArray = _require.isArray,
   isPlainObject = _require.isPlainObject,
   forEach = _require.forEach,
@@ -741,7 +741,7 @@ Model.getModel = function (name, data) {
 module.exports = Model;
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./class":1,"./utils":7}],6:[function(require,module,exports){
+},{"../utils":11,"./class":1}],6:[function(require,module,exports){
 (function (global){(function (){
 "use strict";
 
@@ -1046,69 +1046,7 @@ var Router = Class.createClass('router', {
 module.exports = Router;
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./class":1,"./control":2,"./location":4,"./model":5,"./view":8}],7:[function(require,module,exports){
-(function (global){(function (){
-"use strict";
-
-var $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
-/**
- *
- * @param value
- * @return {*}
- */
-var isArray = function isArray(value) {
-  return $.isArray(value);
-};
-/**
- *
- * @param value
- * @returns {*}
- */
-var isPlainObject = function isPlainObject(value) {
-  return $.isPlainObject(value);
-};
-/**
- *
- * @param object
- * @param callback
- * @param thisArg
- */
-var forEach = function forEach(object, callback, thisArg) {
-  var prop,
-    context = thisArg || callback;
-  for (prop in object) {
-    if (object.hasOwnProperty(prop)) {
-      callback.call(context, object[prop], prop);
-    }
-  }
-};
-
-/**
- *
- * @param obj
- * @returns {{}}
- */
-var sortObject = function sortObject(obj) {
-  return Object.keys(obj).sort().reduce(function (result, key) {
-    result[key] = obj[key];
-    return result;
-  }, {});
-};
-var arrayStringify = function arrayStringify(a) {
-  return JSON.stringify(a.slice().sort());
-};
-var compareArrays = function compareArrays(a1, a2) {
-  return arrayStringify(a1) === arrayStringify(a2);
-};
-exports.arrayStringify = sortObject;
-exports.compareArrays = compareArrays;
-exports.sortObject = sortObject;
-exports.isPlainObject = isPlainObject;
-exports.isArray = isArray;
-exports.forEach = isArray;
-
-}).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],8:[function(require,module,exports){
+},{"./class":1,"./control":2,"./location":4,"./model":5,"./view":7}],7:[function(require,module,exports){
 (function (global){(function (){
 "use strict";
 
@@ -1468,7 +1406,7 @@ view.helper = function (name, func) {
 module.exports = view;
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./class":1,"./control":2}],9:[function(require,module,exports){
+},{"./class":1,"./control":2}],8:[function(require,module,exports){
 (function (global){(function (){
 "use strict";
 
@@ -1573,7 +1511,7 @@ $.fn.extend({
 module.exports = $;
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./core/class":1,"./core/control":2,"./core/form":3,"./core/location":4,"./core/model":5,"./core/router":6,"./core/view":8,"./plugins/locale":10}],10:[function(require,module,exports){
+},{"./core/class":1,"./core/control":2,"./core/form":3,"./core/location":4,"./core/model":5,"./core/router":6,"./core/view":7,"./plugins/locale":9}],9:[function(require,module,exports){
 (function (global){(function (){
 "use strict";
 
@@ -1610,8 +1548,8 @@ Locale.load = function (lang) {
   return cache[lang];
 };
 Locale.config = function (params) {
-  $.extend(true, locale, params);
-  return locale;
+  $.extend(true, Locale, params);
+  return Locale;
 };
 /**
  *
@@ -1634,7 +1572,7 @@ Locale.get = function (value) {
 module.exports = Locale;
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],11:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 "use strict";
 
 function deparam(params, coerce, spaces) {
@@ -1687,4 +1625,66 @@ function deparam(params, coerce, spaces) {
 }
 module.exports = deparam;
 
-},{}]},{},[9]);
+},{}],11:[function(require,module,exports){
+(function (global){(function (){
+"use strict";
+
+var $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
+/**
+ *
+ * @param value
+ * @return {*}
+ */
+var isArray = function isArray(value) {
+  return $.isArray(value);
+};
+/**
+ *
+ * @param value
+ * @returns {*}
+ */
+var isPlainObject = function isPlainObject(value) {
+  return $.isPlainObject(value);
+};
+/**
+ *
+ * @param object
+ * @param callback
+ * @param thisArg
+ */
+var forEach = function forEach(object, callback, thisArg) {
+  var prop,
+    context = thisArg || callback;
+  for (prop in object) {
+    if (object.hasOwnProperty(prop)) {
+      callback.call(context, object[prop], prop);
+    }
+  }
+};
+
+/**
+ *
+ * @param obj
+ * @returns {{}}
+ */
+var sortObject = function sortObject(obj) {
+  return Object.keys(obj).sort().reduce(function (result, key) {
+    result[key] = obj[key];
+    return result;
+  }, {});
+};
+var arrayStringify = function arrayStringify(a) {
+  return JSON.stringify(a.slice().sort());
+};
+var compareArrays = function compareArrays(a1, a2) {
+  return arrayStringify(a1) === arrayStringify(a2);
+};
+exports.arrayStringify = sortObject;
+exports.compareArrays = compareArrays;
+exports.sortObject = sortObject;
+exports.isPlainObject = isPlainObject;
+exports.isArray = isArray;
+exports.forEach = isArray;
+
+}).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}]},{},[8]);
