@@ -56,4 +56,4 @@ exports.compareArrays = compareArrays
 exports.sortObject = sortObject
 exports.isPlainObject = isPlainObject
 exports.isArray = isArray
-exports.forEach = isArray
+exports.forEach = forEach
