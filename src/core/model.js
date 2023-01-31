@@ -1,56 +1,17 @@
 const $ = require('jquery');
 const Class = require('./class');
+const {isArray,isPlainObject,forEach,sortObject} = require('./utils')
 /**
  *
  * @type {{}}
  */
 const classes = {};
-/**
- *
- * @param value
- * @returns {*}
- */
-const isArray = function (value) {
-    return $.isArray(value);
-};
-/**
- *
- * @param value
- * @returns {*}
- */
-const isPlainObject = function (value) {
-    return $.isPlainObject(value);
-};
-/**
- *
- * @param object
- * @param callback
- * @param thisArg
- */
-const forEach = function (object, callback, thisArg) {
-    var prop, context = thisArg || callback;
-    for (prop in object) {
-        if (object.hasOwnProperty(prop)) {
-            callback.call(context, object[prop], prop)
-        }
-    }
-};
-/**
- *
- * @param obj
- * @returns {{}}
- */
-const sortObject = function (obj) {
-    return Object.keys(obj).sort().reduce(function (result, key) {
-        result[key] = obj[key];
-        return result;
-    }, {});
-};
+
 /**
  * @name Model
  * @type {Class|*}
  */
-var Model = Class.extend({
+const Model = Class.extend({
     init: function (data) {
         this.extend(data);
     },
@@ -66,26 +27,26 @@ var Model = Class.extend({
         return typeof (prop) === 'undefined' ? defaults : prop;
     },
     ns: function (name) {
-        var context = this;
-        var chunk = name.split('.');
-        var child = this.attr(chunk.slice(0, -1).join('.'));
+        let context = this;
+        let chunk = name.split('.');
+        let child = this.attr(chunk.slice(0, -1).join('.'));
         if (child instanceof Model) {
             context = child;
         }
         return [context, chunk.slice(-1).join('.')];
     },
     on: function (name, callback) {
-        var ns = this.ns(name);
+        let ns = this.ns(name);
         $.event.add(ns[0], ns[1], callback);
         return this;
     },
     off: function (name, callback) {
-        var ns = this.ns(name);
+        let ns = this.ns(name);
         $.event.remove(ns[0], ns[1], callback);
         return this;
     },
     trigger: function (name, data) {
-        var ns = this.ns(name);
+        let ns = this.ns(name);
         $.event.trigger(ns[1], data, ns[0], true);
         return this;
     },
@@ -102,7 +63,7 @@ var Model = Class.extend({
         return this.defer().resolve(this);
     },
     attr: function (key, value) {
-        var i = 0, tmp,
+        let i = 0, tmp,
             data = this.$data,
             name = (key || '').split('.'),
             prop = name.pop(),
@@ -135,9 +96,9 @@ var Model = Class.extend({
         return this;
     },
     eachItem: function (args) {
-        var name = args[1] ? args[0] : null;
-        var callback = args[1] ? args[1] : args[0];
-        var value = name ? this.alt(name, []) : this.$data;
+        let name = args[1] ? args[0] : null;
+        let callback = args[1] ? args[1] : args[0];
+        let value = name ? this.alt(name, []) : this.$data;
         return {
             value: sortObject(value),
             isArray: isArray(value),
@@ -145,14 +106,14 @@ var Model = Class.extend({
         }
     },
     each: function () {
-        var each = this.eachItem(arguments);
+        let each = this.eachItem(arguments);
         forEach(each.value, function (value, key) {
             each.callback(this.instance(value), value, key);
         }, this);
     },
     attrs: function (props) {
         this.$data = (function (data, parent, path) {
-            var prop, callback = arguments.callee;
+            let prop, callback = arguments.callee;
             for (prop in data) {
                 if (data.hasOwnProperty(prop)) {
                     if (parent[prop] && typeof (parent[prop]['attrs']) === 'function') {
@@ -176,7 +137,7 @@ var Model = Class.extend({
     },
     serialize: function () {
         return (function (result, data) {
-            var prop, callback = arguments.callee;
+            let prop, callback = arguments.callee;
             for (prop in data) {
                 if (data.hasOwnProperty(prop)) {
                     if (data[prop] && typeof (data[prop]['serialize']) === 'function') {

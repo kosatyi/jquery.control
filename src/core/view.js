@@ -46,7 +46,7 @@ const entityRe = new RegExp('[&<>"\']', 'g');
  * @param thisArg
  */
 const forEach = function (object, callback, thisArg) {
-    var prop, context = thisArg || callback;
+    let prop, context = thisArg || callback;
     for (prop in object) {
         if (object.hasOwnProperty(prop)) {
             callback.call(context, object[prop], prop)
@@ -70,11 +70,11 @@ const stringFormat = function (value, params) {
  * @return {string}
  */
 const uid = function (ns) {
-    var size = 1000000;
-    var length = String(size).length - 1;
-    var random = Math.abs(Math.random()) * size;
-    var time = String(new Date().getTime()).match(/.{1,7}/g);
-    var result = parseFloat(String(random)).toFixed(length).split('.');
+    let size = 1000000;
+    let length = String(size).length - 1;
+    let random = Math.abs(Math.random()) * size;
+    let time = String(new Date().getTime()).match(/.{1,7}/g);
+    let result = parseFloat(String(random)).toFixed(length).split('.');
     return [ns].concat(result).concat(time).join('-');
 };
 /**
@@ -250,10 +250,10 @@ const resolver = {
         return String(name).replace(this.exp, '$1');
     },
     get: function(name){
-        var i = 0, c = false;
-        var e = this.ext;
-        var l = listView;
-        var n = this.name(name);
+        let i = 0, c = false;
+        let e = this.ext;
+        let l = listView;
+        let n = this.name(name);
         for (; i < e.length; i++) {
             c = l[[n,e[i]].join('.')];
             if (c) {
@@ -297,7 +297,7 @@ const helpers = {
      * @returns {*}
      */
     $view: function (tag, callback) {
-        var id = uid('node');
+        let id = uid('node');
         listAttr[id] = {tag: tag, callback: callback};
         return stringFormat('<view id="{0}"></view>', [id]);
     },
@@ -308,7 +308,7 @@ const helpers = {
      * @returns {string}
      */
     $prop: function (callback) {
-        var id = uid('attr');
+        let id = uid('attr');
         listProp[id] = {selector: ['[', id, ']'].join(''), callback: callback};
         return ['', id, ''].join(' ');
     },

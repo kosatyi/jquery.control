@@ -1,109 +1,4 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
-(function (global){(function (){
-"use strict";
-
-var $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
-var Class = require('./core/class');
-var Location = require('./core/location');
-var Control = require('./core/control');
-var Model = require('./core/model');
-var Locale = require('./plugins/locale');
-var Form = require('./core/form');
-var Router = require('./core/router');
-var View = require('./core/view');
-/**
- * @memberOf $
- * @property Class
- */
-$.Class = Class;
-/**
- * @memberOf $
- * @property Model
- */
-$.Model = Model;
-/**
- * @memberOf $
- * @property Control
- */
-$.Control = Control;
-/**
- * @memberOf $
- * @property Router
- */
-$.Router = Router;
-/**
- * @memberOf $
- * @property createClass
- * @type {function(*=, *, *): (*)}
- */
-$.createClass = Class.createClass;
-/**
- * @memberOf $
- * @property getClass
- * @type {function(*, *=): (undefined|*)}
- */
-$.getClass = Class.getClass;
-/**
- * @memberOf $
- * @property createModel
- * @type {function(*=, *, *): (*)}
- */
-$.createModel = Model.createModel;
-/**
- * @memberOf $
- * @property getModel
- * @type {function(*, *=): (undefined|*)}
- */
-$.getModel = Model.getModel;
-/**
- *
- * @type {function(*=, *, *): *}
- */
-$.createControl = Control.createControl;
-/**
- * @memberOf $
- * @property initControl
- * @type {function(*, *=): (undefined|*)}
- */
-$.initControl = Control.initControl;
-/**
- * @memberOf $
- * @property location
- * @type {Object}
- */
-$.location = Location;
-/**
- * @memberOf $
- * @property locale
- * @type {Object}
- */
-$.locale = Locale;
-/**
- * @memberOf $
- * @property ejs
- * @deprecated
- */
-$.ejs = View;
-/**
- *
- */
-$.fn.extend({
-  setFormData: Form.setFormData,
-  getFormData: Form.getFormData,
-  initControls: function initControls() {
-    this.each(function (index, element) {
-      Control.initControls(element);
-    });
-  }
-});
-/**
- *
- * @type {jQuery}
- */
-module.exports = $;
-
-}).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./core/class":2,"./core/control":3,"./core/form":4,"./core/location":5,"./core/model":6,"./core/router":7,"./core/view":8,"./plugins/locale":9}],2:[function(require,module,exports){
 "use strict";
 
 var classes = {};
@@ -184,23 +79,20 @@ Class.getClass = function (name, data) {
 };
 module.exports = Class;
 
-},{}],3:[function(require,module,exports){
+},{}],2:[function(require,module,exports){
 (function (global){(function (){
 "use strict";
 
-function _readOnlyError(name) { throw new TypeError("\"" + name + "\" is read-only"); }
 var $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
 var Class = require('./class');
+var _require = require('./utils'),
+  compareArrays = _require.compareArrays,
+  forEach = _require.forEach;
 var classes = {};
 var controls = [];
 var ATTR = 'control';
 var ATTR_SELECTOR = '[' + ATTR + ']';
-var arrayStringify = function arrayStringify(a) {
-  return JSON.stringify(a.slice().sort());
-};
-var compareArrays = function compareArrays(a1, a2) {
-  return arrayStringify(a1) === arrayStringify(a2);
-};
+
 /**
  * @name Control
  * @property {jQuery} element
@@ -324,11 +216,9 @@ var Control = Class.extend({
     return tag;
   },
   clearProxyCache: function clearProxyCache() {
-    for (var prop in this._proxy_cache_) {
-      if (this._proxy_cache_.hasOwnProperty(prop)) {
-        delete this._proxy_cache_[prop];
-      }
-    }
+    forEach(this._proxy_cache_, function (value, prop) {
+      delete this._proxy_cache_[prop];
+    }, this);
   },
   bind: function bind() {
     var el,
@@ -393,13 +283,12 @@ function sortControls(a, b) {
   return 0;
 }
 function cleanControls(force) {
-  controls.filter(function (control) {
+  controls.forEach(function (control, index) {
     if (control.canBeDestroyed() || force) {
       control.destroy();
-      return false;
+      controls.splice(index, 0);
     }
-    return true;
-  }), _readOnlyError("controls");
+  });
 }
 
 /**
@@ -444,7 +333,7 @@ Control.initControls = initControls;
 module.exports = Control;
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./class":2}],4:[function(require,module,exports){
+},{"./class":1,"./utils":7}],3:[function(require,module,exports){
 (function (global){(function (){
 "use strict";
 
@@ -548,7 +437,7 @@ module.exports = {
 };
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../utils/deparam":10}],5:[function(require,module,exports){
+},{"../utils/deparam":11}],4:[function(require,module,exports){
 (function (global){(function (){
 "use strict";
 
@@ -656,59 +545,23 @@ var instance = {
 module.exports = instance;
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../utils/deparam":10}],6:[function(require,module,exports){
+},{"../utils/deparam":11}],5:[function(require,module,exports){
 (function (global){(function (){
 "use strict";
 
 var $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
 var Class = require('./class');
+var _require = require('./utils'),
+  isArray = _require.isArray,
+  isPlainObject = _require.isPlainObject,
+  forEach = _require.forEach,
+  sortObject = _require.sortObject;
 /**
  *
  * @type {{}}
  */
 var classes = {};
-/**
- *
- * @param value
- * @returns {*}
- */
-var isArray = function isArray(value) {
-  return $.isArray(value);
-};
-/**
- *
- * @param value
- * @returns {*}
- */
-var isPlainObject = function isPlainObject(value) {
-  return $.isPlainObject(value);
-};
-/**
- *
- * @param object
- * @param callback
- * @param thisArg
- */
-var forEach = function forEach(object, callback, thisArg) {
-  var prop,
-    context = thisArg || callback;
-  for (prop in object) {
-    if (object.hasOwnProperty(prop)) {
-      callback.call(context, object[prop], prop);
-    }
-  }
-};
-/**
- *
- * @param obj
- * @returns {{}}
- */
-var sortObject = function sortObject(obj) {
-  return Object.keys(obj).sort().reduce(function (result, key) {
-    result[key] = obj[key];
-    return result;
-  }, {});
-};
+
 /**
  * @name Model
  * @type {Class|*}
@@ -888,7 +741,7 @@ Model.getModel = function (name, data) {
 module.exports = Model;
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./class":2}],7:[function(require,module,exports){
+},{"./class":1,"./utils":7}],6:[function(require,module,exports){
 (function (global){(function (){
 "use strict";
 
@@ -1193,7 +1046,69 @@ var Router = Class.createClass('router', {
 module.exports = Router;
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./class":2,"./control":3,"./location":5,"./model":6,"./view":8}],8:[function(require,module,exports){
+},{"./class":1,"./control":2,"./location":4,"./model":5,"./view":8}],7:[function(require,module,exports){
+(function (global){(function (){
+"use strict";
+
+var $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
+/**
+ *
+ * @param value
+ * @return {*}
+ */
+var isArray = function isArray(value) {
+  return $.isArray(value);
+};
+/**
+ *
+ * @param value
+ * @returns {*}
+ */
+var isPlainObject = function isPlainObject(value) {
+  return $.isPlainObject(value);
+};
+/**
+ *
+ * @param object
+ * @param callback
+ * @param thisArg
+ */
+var forEach = function forEach(object, callback, thisArg) {
+  var prop,
+    context = thisArg || callback;
+  for (prop in object) {
+    if (object.hasOwnProperty(prop)) {
+      callback.call(context, object[prop], prop);
+    }
+  }
+};
+
+/**
+ *
+ * @param obj
+ * @returns {{}}
+ */
+var sortObject = function sortObject(obj) {
+  return Object.keys(obj).sort().reduce(function (result, key) {
+    result[key] = obj[key];
+    return result;
+  }, {});
+};
+var arrayStringify = function arrayStringify(a) {
+  return JSON.stringify(a.slice().sort());
+};
+var compareArrays = function compareArrays(a1, a2) {
+  return arrayStringify(a1) === arrayStringify(a2);
+};
+exports.arrayStringify = sortObject;
+exports.compareArrays = compareArrays;
+exports.sortObject = sortObject;
+exports.isPlainObject = isPlainObject;
+exports.isArray = isArray;
+exports.forEach = isArray;
+
+}).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],8:[function(require,module,exports){
 (function (global){(function (){
 "use strict";
 
@@ -1553,7 +1468,112 @@ view.helper = function (name, func) {
 module.exports = view;
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./class":2,"./control":3}],9:[function(require,module,exports){
+},{"./class":1,"./control":2}],9:[function(require,module,exports){
+(function (global){(function (){
+"use strict";
+
+var $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
+var Class = require('./core/class');
+var Location = require('./core/location');
+var Control = require('./core/control');
+var Model = require('./core/model');
+var Locale = require('./plugins/locale');
+var Form = require('./core/form');
+var Router = require('./core/router');
+var View = require('./core/view');
+/**
+ * @memberOf $
+ * @property Class
+ */
+$.Class = Class;
+/**
+ * @memberOf $
+ * @property Model
+ */
+$.Model = Model;
+/**
+ * @memberOf $
+ * @property Control
+ */
+$.Control = Control;
+/**
+ * @memberOf $
+ * @property Router
+ */
+$.Router = Router;
+/**
+ * @memberOf $
+ * @property createClass
+ * @type {function(*=, *, *): (*)}
+ */
+$.createClass = Class.createClass;
+/**
+ * @memberOf $
+ * @property getClass
+ * @type {function(*, *=): (undefined|*)}
+ */
+$.getClass = Class.getClass;
+/**
+ * @memberOf $
+ * @property createModel
+ * @type {function(*=, *, *): (*)}
+ */
+$.createModel = Model.createModel;
+/**
+ * @memberOf $
+ * @property getModel
+ * @type {function(*, *=): (undefined|*)}
+ */
+$.getModel = Model.getModel;
+/**
+ *
+ * @type {function(*=, *, *): *}
+ */
+$.createControl = Control.createControl;
+/**
+ * @memberOf $
+ * @property initControl
+ * @type {function(*, *=): (undefined|*)}
+ */
+$.initControl = Control.initControl;
+/**
+ * @memberOf $
+ * @property location
+ * @type {Object}
+ */
+$.location = Location;
+/**
+ * @memberOf $
+ * @property locale
+ * @type {Object}
+ */
+$.locale = Locale;
+/**
+ * @memberOf $
+ * @property ejs
+ * @deprecated
+ */
+$.ejs = View;
+/**
+ *
+ */
+$.fn.extend({
+  setFormData: Form.setFormData,
+  getFormData: Form.getFormData,
+  initControls: function initControls() {
+    this.each(function (index, element) {
+      Control.initControls(element);
+    });
+  }
+});
+/**
+ *
+ * @type {jQuery}
+ */
+module.exports = $;
+
+}).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./core/class":1,"./core/control":2,"./core/form":3,"./core/location":4,"./core/model":5,"./core/router":6,"./core/view":8,"./plugins/locale":10}],10:[function(require,module,exports){
 (function (global){(function (){
 "use strict";
 
@@ -1614,7 +1634,7 @@ Locale.get = function (value) {
 module.exports = Locale;
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 "use strict";
 
 function deparam(params, coerce, spaces) {
@@ -1667,4 +1687,4 @@ function deparam(params, coerce, spaces) {
 }
 module.exports = deparam;
 
-},{}]},{},[1]);
+},{}]},{},[9]);

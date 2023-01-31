@@ -1,15 +1,11 @@
 const $     = require('jquery');
 const Class = require('./class');
+const {compareArrays, forEach} = require('./utils')
 const classes  = {};
 const controls = [];
 const ATTR = 'control';
 const ATTR_SELECTOR = '['+ ATTR +']';
-const arrayStringify = function(a){
-    return JSON.stringify(a.slice().sort());
-};
-const compareArrays = function(a1,a2){
-    return arrayStringify(a1) === arrayStringify(a2);
-};
+
 /**
  * @name Control
  * @property {jQuery} element
@@ -135,14 +131,12 @@ const Control = Class.extend({
         return tag;
     },
     clearProxyCache: function () {
-        for (var prop in this._proxy_cache_) {
-            if (this._proxy_cache_.hasOwnProperty(prop)) {
-                delete this._proxy_cache_[prop];
-            }
-        }
+        forEach(this._proxy_cache_,function(value,prop){
+            delete this._proxy_cache_[prop];
+        },this)
     },
     bind: function () {
-        var el, args = this.toArray(arguments);
+        let el, args = this.toArray(arguments);
         this.addBinding(args);
         args = this._addProxy_(3,4,args);
         el = this[args[0]] || $(args[0]);
@@ -196,7 +190,7 @@ const Control = Class.extend({
 });
 
 function sortControls(a, b) {
-    var c = a.querySelectorAll(ATTR_SELECTOR).length,
+    let c = a.querySelectorAll(ATTR_SELECTOR).length,
         d = b.querySelectorAll(ATTR_SELECTOR).length;
     if ((c && !d) || (c > d)) return 1;
     if ((!c && d) || (c < d)) return -1;
@@ -204,12 +198,11 @@ function sortControls(a, b) {
 }
 
 function cleanControls(force) {
-    controls = controls.filter(function (control) {
+    controls.forEach(function (control,index) {
         if (control.canBeDestroyed() || force) {
             control.destroy();
-            return false;
+            controls.splice(index,0)
         }
-        return true;
     });
 }
 

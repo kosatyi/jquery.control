@@ -10,7 +10,7 @@ const Location = require('./location');
  * @returns {RegExp}
  */
 const pathToRegexp = function (path) {
-    var result, keys = [], parse = function (_, slsh, format, key, capture, opt) {
+    let result, keys = [], parse = function (_, slsh, format, key, capture, opt) {
         keys.push({name: key, optional: !!opt});
         slsh = slsh || '';
         return '' + (opt ? '' : slsh) + '(?:' + (opt ? slsh : '') + (format || '') + (capture || (format && '([^/.]+?)' || '([^/]+?)')) + ')' + (opt || '');
@@ -35,9 +35,9 @@ const pathToRegexp = function (path) {
  * @returns {{}|boolean}
  */
 const pathMatch = function (regexp, path) {
-    var key;
-    var match = regexp.exec(path);
-    var params = {};
+    let key;
+    let match = regexp.exec(path);
+    let params = {};
     if (!match) return false;
     for (var i = 1, len = match.length; i < len; ++i)
         if ((key = regexp.keys[i - 1]))
@@ -105,7 +105,7 @@ Model.createModel('router.queue', {
         this.list = {};
     },
     add: function(name,defer){
-        var queue = this;
+        let queue = this;
         queue.list[name] = defer.then(function(content){
             queue.defer.notifyWith(queue,[name,content]);
         },function(){
@@ -148,7 +148,7 @@ Model.createModel('router.response', {
  */
 Model.createModel('router.request', {
     query: function () {
-        var query = Location.query();
+        let query = Location.query();
         this.attr('query',query);
         return query;
     },
@@ -156,10 +156,10 @@ Model.createModel('router.request', {
         return new RegExp(exp).test(this.attr('path'));
     },
     model: function () {
-        var args = [].slice.call(arguments);
-        var name = args.shift();
-        var method = args.shift();
-        var model = Model.getModel(name);
+        let args = [].slice.call(arguments);
+        let name = args.shift();
+        let method = args.shift();
+        let model = Model.getModel(name);
         if (method && typeof (model[method]) === 'function') {
             return model[method].apply(model, args);
         }
@@ -224,7 +224,7 @@ const Router = Class.createClass('router', {
         this.response.stop();
     },
     route: function (path) {
-        var route = this._routes_[path] || Class.getClass('route', path);
+        let route = this._routes_[path] || Class.getClass('route', path);
         this._routes_[path] = route;
         return route;
     },
@@ -249,9 +249,9 @@ const Router = Class.createClass('router', {
     },
     process: function (list, complete) {
         (function (cx,index) {
-            var params = [];
-            var next   = arguments.callee;
-            var route  = list[index] || false;
+            let params = [];
+            let next   = arguments.callee;
+            let route  = list[index] || false;
             if (route === false) return complete && complete.call && complete.call(cx);
             params.push(cx.request);
             params.push(cx.response);
@@ -274,7 +274,7 @@ const Router = Class.createClass('router', {
         });
     },
     find: function (path,complete) {
-        var route,result = Class.getClass('route', path);
+        let route,result = Class.getClass('route', path);
         if( complete === true ){
             this.prepare();
         }
