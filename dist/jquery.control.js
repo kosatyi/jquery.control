@@ -1684,7 +1684,7 @@ exports.compareArrays = compareArrays;
 exports.sortObject = sortObject;
 exports.isPlainObject = isPlainObject;
 exports.isArray = isArray;
-exports.forEach = isArray;
+exports.forEach = forEach;
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}]},{},[8]);
