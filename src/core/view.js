@@ -98,7 +98,7 @@ const mountNodes = function (element) {
  */
 const mountProps = function (element) {
     forEach(listProp, function (item, attr) {
-        var node = element.querySelector(item.selector);
+        let node = element.querySelector(item.selector);
         if (node === null) return;
         node.removeAttribute(attr);
         if (typeof (item.callback) === 'function') {
@@ -136,14 +136,14 @@ const escapeString = function (string) {
  * @return {function(*=): string}
  */
 const compile = function (text, name) {
-    var render;
-    var matcher = new RegExp([
+    let render;
+    let matcher = new RegExp([
         (settings.escape || noMatch).source,
         (settings.interpolate || noMatch).source,
         (settings.evaluate || noMatch).source
     ].join('|') + '|$', 'g');
-    var index = 0;
-    var source = "__p+='";
+    let index = 0;
+    let source = "__p+='";
     (text||'').replace(matcher, function (match, escape, interpolate, evaluate, offset) {
         source += escapeString(text.slice(index, offset));
         if (escape) source += "'\n+((__t=(" + escape + "))==null?'':escapeExpr(__t))+\n'";
@@ -161,8 +161,8 @@ const compile = function (text, name) {
     } catch (e) {
         console.error(e);
     }
-    var template = function (data) {
-        var output = '';
+    let template = function (data) {
+        let output = '';
         try {
             output = render && render.call(this, data, escapeExpr);
         } catch (e) {
@@ -180,13 +180,13 @@ const compile = function (text, name) {
  * @return {DocumentFragment}
  */
 const fragment = function(html) {
-    var template = document.createElement('template');
+    let template = document.createElement('template');
     if ('content' in template) {
         template.innerHTML = html;
         return document.importNode(template.content, true);
     }
-    var frag = document.createDocumentFragment();
-    var div = document.createElement('div');
+    let frag = document.createDocumentFragment();
+    let div = document.createElement('div');
     div.innerHTML = html;
     while (div.firstChild) {
         frag.appendChild(div.firstChild);
@@ -213,7 +213,7 @@ const template = Class.extend({
         return this.output.call(data, data);
     },
     render: function (data) {
-        var element = fragment(this.renderHTML(data));
+        let element = fragment(this.renderHTML(data));
         mountNodes(element);
         mountProps(element);
         return element;

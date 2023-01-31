@@ -1,6 +1,6 @@
 const $     = require('jquery');
 const Class = require('./class');
-const {compareArrays, forEach} = require('./utils')
+const {compareArrays, forEach} = require('../utils')
 const classes  = {};
 const controls = [];
 const ATTR = 'control';

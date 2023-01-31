@@ -32,8 +32,8 @@ Locale.load = function (lang) {
 };
 
 Locale.config = function(params){
-    $.extend(true,locale,params);
-    return locale;
+    $.extend(true,Locale,params);
+    return Locale;
 };
 /**
  *

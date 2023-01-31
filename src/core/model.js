@@ -1,6 +1,6 @@
 const $ = require('jquery');
 const Class = require('./class');
-const {isArray,isPlainObject,forEach,sortObject} = require('./utils')
+const {isArray,isPlainObject,forEach,sortObject} = require('../utils')
 /**
  *
  * @type {{}}
