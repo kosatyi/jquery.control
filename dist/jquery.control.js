@@ -150,7 +150,7 @@ var Control = Class.extend({
    * @param element
    */
   initElement: function initElement(element) {
-    this.element = $(this._element_ = element);
+    this.element = $(element);
     if (this.addControlClassName === true) {
       this.element.addClass(this.name.split('.').join('-'));
     }
@@ -272,7 +272,7 @@ var Control = Class.extend({
     this.element.removeData();
   },
   canBeDestroyed: function canBeDestroyed() {
-    return this._element_ ? document.body.contains(this._element_) === false : false;
+    return this.document.contains(this.element) === false;
   }
 });
 function sortControls(a, b) {
