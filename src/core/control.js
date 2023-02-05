@@ -63,7 +63,7 @@ const Control = Class.extend({
      * @param element
      */
     initElement: function (element) {
-        this.element = $(this._element_ = element);
+        this.element = $(element);
         if( this.addControlClassName === true ){
             this.element.addClass(this.name.split('.').join('-'));
         }
@@ -185,7 +185,7 @@ const Control = Class.extend({
         this.element.removeData();
     },
     canBeDestroyed: function () {
-        return this._element_ ? document.body.contains(this._element_) === false : false;
+        return this.document.contains(this.element) === false
     }
 });
 
