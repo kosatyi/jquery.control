@@ -201,7 +201,7 @@ function cleanControls(force) {
     controls.forEach(function (control,index) {
         if (control.canBeDestroyed() || force) {
             control.destroy();
-            controls.splice(index,0)
+            controls.splice(index,1)
         }
     });
 }
@@ -242,7 +242,6 @@ function initControls(element){
             });
             item.removeAttribute(ATTR);
         });
-
 }
 
 Control.createControl = createControl;
