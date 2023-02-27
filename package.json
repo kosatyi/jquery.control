@@ -2,7 +2,7 @@
   "name": "jquery.control",
   "license": "MIT",
   "description": "jQuery Control",
-  "version": "0.0.7-alpha.0",
+  "version": "0.0.7-alpha.1",
   "type": "module",
   "devDependencies": {
     "@babel/core": "^7.20.12",
@@ -16,7 +16,7 @@
     "test": "",
     "preversion": "npm test",
     "version": "npm run build && git add -A dist",
-    "postversion": "git push && git push --tags && rm -rf dist"
+    "postversion": "git push && git push --tags"
   },
   "main": "dist/jquery.control.js",
   "browser": "dist/jquery.control.min.js"
