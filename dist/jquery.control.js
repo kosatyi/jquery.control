@@ -664,9 +664,8 @@
         }, this);
       },
       attrs: function (props) {
-        this.$data = function (data, parent, path) {
-          let prop,
-            callback = arguments.callee;
+        this.$data = function callback(data, parent, path) {
+          let prop;
           for (prop in data) {
             if (data.hasOwnProperty(prop)) {
               if (parent[prop] && typeof parent[prop]['attrs'] === 'function') {
@@ -689,9 +688,8 @@
         return this;
       },
       serialize: function () {
-        return function (result, data) {
-          let prop,
-            callback = arguments.callee;
+        return function callback(result, data) {
+          let prop;
           for (prop in data) {
             if (data.hasOwnProperty(prop)) {
               if (data[prop] && typeof data[prop]['serialize'] === 'function') {
@@ -1495,9 +1493,8 @@
         this.call(context, params[0], params[1], params[2]);
       },
       process: function (list, complete) {
-        (function (cx, index) {
+        (function next(cx, index) {
           let params = [];
-          let next = arguments.callee;
           let route = list[index] || false;
           if (route === false) return complete && complete.call && complete.call(cx);
           params.push(cx.request);

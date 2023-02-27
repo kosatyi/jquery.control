@@ -112,8 +112,8 @@ const Model = Class.extend({
         }, this);
     },
     attrs: function (props) {
-        this.$data = (function (data, parent, path) {
-            let prop, callback = arguments.callee;
+        this.$data = (function callback(data, parent, path) {
+            let prop
             for (prop in data) {
                 if (data.hasOwnProperty(prop)) {
                     if (parent[prop] && typeof (parent[prop]['attrs']) === 'function') {
@@ -136,8 +136,8 @@ const Model = Class.extend({
         return this;
     },
     serialize: function () {
-        return (function (result, data) {
-            let prop, callback = arguments.callee;
+        return (function callback(result, data) {
+            let prop;
             for (prop in data) {
                 if (data.hasOwnProperty(prop)) {
                     if (data[prop] && typeof (data[prop]['serialize']) === 'function') {

@@ -248,9 +248,8 @@ const Router = Class.createClass('router', {
         this.call(context,params[0],params[1],params[2]);
     },
     process: function (list, complete) {
-        (function (cx,index) {
+        (function next(cx,index) {
             let params = [];
-            let next   = arguments.callee;
             let route  = list[index] || false;
             if (route === false) return complete && complete.call && complete.call(cx);
             params.push(cx.request);
