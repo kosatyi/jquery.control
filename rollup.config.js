@@ -6,7 +6,7 @@ export default [{
         {
             file: 'dist/jquery.control.js',
             format: 'umd',
-            name: 'jQueryControl',
+            name: '$',
             globals: {
                 'jquery': '$'
             },
@@ -14,7 +14,7 @@ export default [{
         {
             file: 'dist/jquery.control.min.js',
             format: 'umd',
-            name: 'jQueryControl',
+            name: '$',
             sourcemap: true,
             globals: {
                 'jquery': '$'
