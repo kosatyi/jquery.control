@@ -1,4 +1,4 @@
-const $ = require("jquery");
+const $ = require('../core/jquery');
 /**
  *
  * @param value

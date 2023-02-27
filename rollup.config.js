@@ -1,44 +1,38 @@
 import {resolve, commonjs, babel, terser} from '@kosatyi/rollup'
+import pkg from './package.json'
 
-export default [{
+const terserOptions = {
+    mangle: {
+        reserved: ['$'],
+    },
+    format: {
+        comments: false,
+    },
+}
+
+export default {
     input: 'src/index.js',
     output: [
         {
-            file: 'dist/jquery.control.js',
+            file: pkg.main,
+            name: pkg.name,
             format: 'umd',
-            name: 'jQueryControl',
-            globals: {
-                'jquery': '$'
-            },
         },
         {
-            file: 'dist/jquery.control.min.js',
+            file: pkg.browser,
+            name: pkg.name,
             format: 'umd',
-            name: 'jQueryControl',
             sourcemap: true,
-            globals: {
-                'jquery': '$'
-            },
             plugins: [
-                terser({
-                    mangle: {
-                        reserved: ['$'],
-                    },
-                    format: {
-                        comments: false,
-                    },
-                }),
+                terser(terserOptions),
             ]
         }
     ],
-    external: ['jquery'],
     plugins: [
         commonjs(),
-        resolve({
-            browser: true
-        }),
+        resolve(),
         babel({
             babelHelpers: 'bundled'
         }),
     ],
-}]
+}

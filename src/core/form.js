@@ -1,4 +1,4 @@
-const $ = require('jquery');
+const $ = jQuery;
 /**
  *
  * @type {function(*, *=, *=): {}}

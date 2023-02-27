@@ -1,4 +1,4 @@
-const $ = require('jquery');
+const $ = require('./jquery');
 
 const Class = require('./class');
 const Control = require("./control");

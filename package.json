@@ -18,5 +18,8 @@
     "postversion": "git push && git push --tags"
   },
   "main": "dist/jquery.control.js",
-  "browser": "dist/jquery.control.min.js"
+  "browser": "dist/jquery.control.min.js",
+  "dependencies": {
+    "rollup-plugin-shim": "^1.0.0"
+  }
 }

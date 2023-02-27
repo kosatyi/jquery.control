@@ -1,12 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('jquery')) :
-    typeof define === 'function' && define.amd ? define(['jquery'], factory) :
-    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.jQueryControl = factory(global.$));
-})(this, (function (require$$0) { 'use strict';
-
-    function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
-
-    var require$$0__default = /*#__PURE__*/_interopDefaultLegacy(require$$0);
+    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+    typeof define === 'function' && define.amd ? define(factory) :
+    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.jQueryControl = factory());
+})(this, (function () { 'use strict';
 
     const classes$2 = {};
     let init = false;
@@ -86,6 +82,8 @@
     };
     var _class = Class$5;
 
+    var jquery = window['jQuery'];
+
     function deparam$2(params, coerce, spaces) {
       let obj = {},
         coerce_types = {
@@ -136,7 +134,7 @@
     }
     var deparam_1 = deparam$2;
 
-    const $$8 = require$$0__default["default"];
+    const $$8 = jquery;
     const deparam$1 = deparam_1;
     let skip = false;
     const instance = {
@@ -241,7 +239,7 @@
 
     var utils = {};
 
-    const $$7 = require$$0__default["default"];
+    const $$7 = jquery;
     /**
      *
      * @param value
@@ -298,7 +296,7 @@
     utils.isArray = isArray$1;
     utils.forEach = forEach$3;
 
-    const $$6 = require$$0__default["default"];
+    const $$6 = jquery;
     const Class$4 = _class;
     const {
       compareArrays,
@@ -548,7 +546,7 @@
     Control$3.initControls = initControls;
     var control = Control$3;
 
-    const $$5 = require$$0__default["default"];
+    const $$5 = jquery;
     const Class$3 = _class;
     const {
       isArray,
@@ -738,7 +736,7 @@
     };
     var model = Model$2;
 
-    const $$4 = require$$0__default["default"];
+    const $$4 = jquery;
     /**
      *
      * @type {{}}
@@ -794,7 +792,7 @@
     };
     var locale = Locale$1;
 
-    const $$3 = require$$0__default["default"];
+    const $$3 = jQuery;
     /**
      *
      * @type {function(*, *=, *=): {}}
@@ -892,7 +890,7 @@
       getFormData: getFormData
     };
 
-    const $$2 = require$$0__default["default"];
+    const $$2 = jquery;
     const Class$2 = _class;
     const Control$2 = control;
     const listPreload = {};
@@ -1247,7 +1245,7 @@
     };
     var view_1 = view;
 
-    const $$1 = require$$0__default["default"];
+    const $$1 = jquery;
     const Class$1 = _class;
     const Model$1 = model;
     const View$1 = view_1;
@@ -1546,7 +1544,7 @@
     });
     var router = Router$1;
 
-    const $ = require$$0__default["default"];
+    const $ = jQuery;
     const Class = _class;
     const Location = location_1;
     const Control = control;

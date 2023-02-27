@@ -1,4 +1,4 @@
-const $ = require('jquery');
+const $ = require('./jquery');
 
 const deparam = require('../utils/deparam');
 

@@ -1,4 +1,4 @@
-const $        = require('jquery');
+const $        = jQuery;
 const Class    = require('./core/class');
 const Location = require('./core/location');
 const Control  = require('./core/control');
