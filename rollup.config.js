@@ -1,11 +1,11 @@
-import {resolve, commonjs, babel, terser} from '@kosatyi/rollup'
+import {resolve, commonjs, terser} from '@kosatyi/rollup'
 
 export default [{
     input: 'src/index.js',
     output: [
         {
             file: 'dist/jquery.control.js',
-            format: 'cjs',
+            format: 'umd',
             name: '$',
             globals: {
                 'jquery': '$'
@@ -34,10 +34,8 @@ export default [{
     external: ['jquery'],
     plugins: [
         commonjs(),
-        resolve(),
-        babel({
-            babelHelpers: 'bundled',
-            sourceMaps: true
-        }),
+        resolve({
+            browser: true
+        })
     ],
 }]
