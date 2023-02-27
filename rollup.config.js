@@ -1,4 +1,4 @@
-import {resolve, commonjs, terser} from '@kosatyi/rollup'
+import {resolve, commonjs, babel, terser} from '@kosatyi/rollup'
 
 export default [{
     input: 'src/index.js',
@@ -36,6 +36,9 @@ export default [{
         commonjs(),
         resolve({
             browser: true
-        })
+        }),
+        babel({
+            babelHelpers: 'bundled'
+        }),
     ],
 }]
