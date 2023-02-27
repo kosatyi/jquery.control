@@ -30,7 +30,6 @@ export default {
         },
         {
             file: 'dist/jquery.control.min.js',
-            sourcemap: true,
             format: 'umd',
             name: '$',
             globals: {
