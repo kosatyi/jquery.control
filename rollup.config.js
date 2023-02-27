@@ -8,7 +8,7 @@ export default [{
             format: 'umd',
             name: '$',
             globals: {
-                jquery: '$',
+                'jquery': '$',
             },
         },
         {
@@ -17,7 +17,9 @@ export default [{
             name: '$',
             sourcemap: true,
             globals: {
-                jquery: '$',
+                'jquery': '$',
+                'document': 'document',
+                'window': 'window'
             },
             plugins: [
                 terser({
