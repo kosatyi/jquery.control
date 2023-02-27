@@ -20,6 +20,13 @@ export default {
             globals: {
                 jquery: '$',
             },
+            plugins: [
+                commonjs(),
+                resolve(),
+                babel({
+                    babelHelpers: 'bundled',
+                }),
+            ]
         },
         {
             file: 'dist/jquery.control.min.js',
@@ -31,16 +38,14 @@ export default {
             },
             plugins: [
                 sourcemaps(),
+                commonjs(),
+                resolve(),
+                babel({
+                    babelHelpers: 'bundled',
+                }),
                 terser(terserConfig),
             ]
         }
     ],
     external: ['jquery'],
-    plugins: [
-        commonjs(),
-        resolve(),
-        babel({
-            babelHelpers: 'bundled',
-        }),
-    ],
 }
