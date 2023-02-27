@@ -1,7 +1,7 @@
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
     typeof define === 'function' && define.amd ? define(factory) :
-    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.jQueryControl = factory());
+    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, (global.jquery = global.jquery || {}, global.jquery.control = factory()));
 })(this, (function () { 'use strict';
 
     const classes$2 = {};
