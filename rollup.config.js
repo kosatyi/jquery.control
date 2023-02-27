@@ -1,6 +1,6 @@
 import {resolve, commonjs, babel, terser} from '@kosatyi/rollup'
 
-export default {
+export default [{
     input: 'src/index.js',
     output: [
         {
@@ -40,4 +40,4 @@ export default {
             sourceMaps: true
         }),
     ],
-}
+}]

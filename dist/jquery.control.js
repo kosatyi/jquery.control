@@ -4,6 +4,10 @@
     (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.$ = factory(global.$));
 })(this, (function (require$$0) { 'use strict';
 
+    function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+
+    var require$$0__default = /*#__PURE__*/_interopDefaultLegacy(require$$0);
+
     const classes$2 = {};
     let init = false;
     const fnTest = /xyz/.test(function () {
@@ -132,7 +136,7 @@
     }
     var deparam_1 = deparam$2;
 
-    const $$8 = require$$0;
+    const $$8 = require$$0__default["default"];
     const deparam$1 = deparam_1;
     let skip = false;
     const instance = {
@@ -237,7 +241,7 @@
 
     var utils = {};
 
-    const $$7 = require$$0;
+    const $$7 = require$$0__default["default"];
     /**
      *
      * @param value
@@ -294,7 +298,7 @@
     utils.isArray = isArray$1;
     utils.forEach = forEach$3;
 
-    const $$6 = require$$0;
+    const $$6 = require$$0__default["default"];
     const Class$4 = _class;
     const {
       compareArrays,
@@ -544,7 +548,7 @@
     Control$3.initControls = initControls;
     var control = Control$3;
 
-    const $$5 = require$$0;
+    const $$5 = require$$0__default["default"];
     const Class$3 = _class;
     const {
       isArray,
@@ -736,7 +740,7 @@
     };
     var model = Model$2;
 
-    const $$4 = require$$0;
+    const $$4 = require$$0__default["default"];
     /**
      *
      * @type {{}}
@@ -792,7 +796,7 @@
     };
     var locale = Locale$1;
 
-    const $$3 = require$$0;
+    const $$3 = require$$0__default["default"];
     /**
      *
      * @type {function(*, *=, *=): {}}
@@ -890,7 +894,7 @@
       getFormData: getFormData
     };
 
-    const $$2 = require$$0;
+    const $$2 = require$$0__default["default"];
     const Class$2 = _class;
     const Control$2 = control;
     const listPreload = {};
@@ -1245,7 +1249,7 @@
     };
     var view_1 = view;
 
-    const $$1 = require$$0;
+    const $$1 = require$$0__default["default"];
     const Class$1 = _class;
     const Model$1 = model;
     const View$1 = view_1;
@@ -1545,7 +1549,7 @@
     });
     var router = Router$1;
 
-    const $ = require$$0;
+    const $ = require$$0__default["default"];
     const Class = _class;
     const Location = location_1;
     const Control = control;

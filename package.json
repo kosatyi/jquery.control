@@ -3,15 +3,13 @@
   "license": "MIT",
   "description": "jQuery Control",
   "version": "0.0.7-alpha.4",
-  "type": "module",
   "devDependencies": {
     "@babel/core": "^7.20.12",
     "@babel/preset-env": "^7.20.2",
-    "@kosatyi/rollup": "^0.0.7",
-    "rollup": "^3.17.3"
+    "@kosatyi/rollup": "^0.0.7"
   },
   "scripts": {
-    "build": "./node_modules/.bin/rollup -c",
+    "build": "rollup -c",
     "test": "",
     "preversion": "npm test",
     "version": "npm run build && git add -A dist",
