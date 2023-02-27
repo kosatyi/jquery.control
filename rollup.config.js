@@ -1,21 +1,9 @@
 import {resolve, commonjs, babel, terser} from '@kosatyi/rollup'
-import sourcemaps from "rollup-plugin-sourcemaps";
-
-
-const terserConfig = {
-    mangle: {
-        reserved: ['$'],
-    },
-    format: {
-        comments: false,
-    },
-}
 
 export default {
     input: 'src/index.js',
     output: [
         {
-            sourcemaps: true,
             file: 'dist/jquery.control.js',
             format: 'umd',
             name: '$',
@@ -24,25 +12,32 @@ export default {
             },
         },
         {
-            sourcemaps: true,
             file: 'dist/jquery.control.min.js',
             format: 'umd',
             name: '$',
+            sourcemap: true,
             globals: {
                 jquery: '$',
             },
             plugins: [
-                terser(terserConfig),
+                terser({
+                    mangle: {
+                        reserved: ['$'],
+                    },
+                    format: {
+                        comments: false,
+                    },
+                }),
             ]
         }
     ],
     external: ['jquery'],
     plugins: [
-        sourcemaps(),
         commonjs(),
         resolve(),
         babel({
             babelHelpers: 'bundled',
+            sourceMaps: true
         }),
     ],
 }

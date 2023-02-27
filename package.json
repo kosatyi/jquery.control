@@ -8,8 +8,7 @@
     "@babel/core": "^7.20.12",
     "@babel/preset-env": "^7.20.2",
     "@kosatyi/rollup": "^0.0.7",
-    "rollup": "^3.17.3",
-    "rollup-plugin-sourcemaps": "^0.6.3"
+    "rollup": "^3.17.3"
   },
   "scripts": {
     "build": "./node_modules/.bin/rollup -c",
