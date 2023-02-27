@@ -6,10 +6,12 @@
   "devDependencies": {
     "@babel/core": "^7.20.12",
     "@babel/preset-env": "^7.20.2",
-    "@kosatyi/rollup": "^0.0.7"
+    "@kosatyi/rollup": "^0.0.7",
+    "jquery": "^3.6.3"
   },
   "scripts": {
     "build": "rollup -c",
+    "watch": "rollup -c -w",
     "test": "",
     "preversion": "npm test",
     "version": "npm run build && git add -A dist",

@@ -5,10 +5,10 @@ export default [{
     output: [
         {
             file: 'dist/jquery.control.js',
-            format: 'umd',
+            format: 'cjs',
             name: '$',
             globals: {
-                'jquery': '$',
+                'jquery': '$'
             },
         },
         {
@@ -17,9 +17,7 @@ export default [{
             name: '$',
             sourcemap: true,
             globals: {
-                'jquery': '$',
-                'document': 'document',
-                'window': 'window'
+                'jquery': '$'
             },
             plugins: [
                 terser({

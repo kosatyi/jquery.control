@@ -97,3 +97,4 @@ $.fn.extend({
  * @type {jQuery}
  */
 module.exports = $;
+
