@@ -93,6 +93,8 @@ function setFormData( data ) {
 }
 
 module.exports = {
+    deparam: deparam,
+    clean: clean,
     setFormData: setFormData,
     getFormData: getFormData
 };
