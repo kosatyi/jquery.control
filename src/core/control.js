@@ -185,7 +185,7 @@ const Control = Class.extend({
         this.element.removeData();
     },
     canBeDestroyed: function () {
-        return this.document.contains(this.element) === false
+        return $.contains(document,this.element.get(0)) === false
     }
 });
 
