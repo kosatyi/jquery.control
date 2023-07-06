@@ -486,7 +486,7 @@
         this.element.removeData();
       },
       canBeDestroyed: function () {
-        return this.document.contains(this.element) === false;
+        return $$6.contains(document, this.element.get(0)) === false;
       }
     });
     function sortControls(a, b) {
