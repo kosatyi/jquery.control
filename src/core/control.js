@@ -145,6 +145,7 @@ const Control = Class.extend({
     },
     unbind: function () {
         var el, args = this.toArray(arguments);
+        this.initBindings();
         this._bindings_ = this._bindings_.filter(function(item){
             return compareArrays(item,args) === false;
         },this);
