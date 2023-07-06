@@ -76,6 +76,10 @@ $.location     = Location;
 $.locale = Locale;
 /**
  * @memberOf $
+ */
+$.deparam = Form.deparam
+/**
+ * @memberOf $
  * @property ejs
  * @deprecated
  */
