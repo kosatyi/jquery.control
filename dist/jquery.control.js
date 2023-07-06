@@ -886,6 +886,8 @@
       return this;
     }
     var form = {
+      deparam: deparam,
+      clean: clean,
       setFormData: setFormData,
       getFormData: getFormData
     };
@@ -1620,6 +1622,10 @@
      * @type {Object}
      */
     $.locale = Locale;
+    /**
+     * @memberOf $
+     */
+    $.deparam = Form.deparam;
     /**
      * @memberOf $
      * @property ejs
