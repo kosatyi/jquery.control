@@ -99,6 +99,7 @@ Model.createModel('router.queue', {
     },
     stop: function(){
         Object.keys(this.list).forEach(function(name){
+            console.log(this.list,name)
             this.list[name].reject();
             this.remove(name);
         },this);
