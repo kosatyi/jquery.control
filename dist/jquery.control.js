@@ -444,7 +444,7 @@
         return this;
       },
       unbind: function () {
-        var el,
+        let el,
           args = this.toArray(arguments);
         this.initBindings();
         this._bindings_ = this._bindings_.filter(function (item) {
@@ -1333,7 +1333,16 @@
         }
       },
       remove: function (name) {
-        delete this.list[name];
+        if (this.list.hasOwnProperty(name)) {
+          delete this.list[name];
+        }
+        return this;
+      },
+      reject(name) {
+        if (this.list.hasOwnProperty(name)) {
+          this.list[name].reject();
+        }
+        return this;
       },
       then: function (fn) {
         if (this.empty()) {
@@ -1345,8 +1354,7 @@
       },
       stop: function () {
         Object.keys(this.list).forEach(function (name) {
-          this.list[name].reject();
-          this.remove(name);
+          this.reject(name).remove(name);
         }, this);
         this.list = {};
       },
