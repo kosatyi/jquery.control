@@ -87,7 +87,16 @@ Model.createModel('router.queue', {
         }
     },
     remove: function(name){
-        delete this.list[name];
+        if( this.list.hasOwnProperty(name) ) {
+            delete this.list[name];
+        }
+        return this;
+    },
+    reject(name){
+        if( this.list.hasOwnProperty(name) ) {
+            this.list[name].reject();
+        }
+        return this;
     },
     then: function(fn){
         if( this.empty() ) {
@@ -99,9 +108,7 @@ Model.createModel('router.queue', {
     },
     stop: function(){
         Object.keys(this.list).forEach(function(name){
-            console.log(this.list,name)
-            this.list[name].reject();
-            this.remove(name);
+            this.reject(name).remove(name);
         },this);
         this.list = {};
     },
