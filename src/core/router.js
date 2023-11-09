@@ -1,9 +1,10 @@
-const $ = require('./jquery');
-const Class = require('./class');
-const Model = require('./model');
-const View = require('./view');
-const Control = require('./control');
-const Location = require('./location');
+import $ from './jquery'
+import {createClass, getClass} from "./class";
+import {createModel,getModel} from "./model";
+import {view} from './view'
+import {initControls} from "./control";
+import {Location} from "./location";
+
 /**
  *
  * @param path
@@ -63,7 +64,7 @@ const listener = {
 /**
  * @name RouterQueue
  */
-Model.createModel('router.queue', {
+createModel('router.queue', {
     init: function(response){
         this.response = response;
         this.start();
@@ -115,8 +116,10 @@ Model.createModel('router.queue', {
     add: function(name,defer){
         let queue = this;
         queue.list[name] = defer.then(function(content){
+            console.log('success',arguments);
             queue.defer.notifyWith(queue,[name,content]);
         },function(){
+            console.log('error',arguments);
             queue.defer.notifyWith(queue,[name]);
         });
         return queue;
@@ -125,10 +128,10 @@ Model.createModel('router.queue', {
 /**
  * @name RouterResponse
  */
-Model.createModel('router.response', {
+createModel('router.response', {
     init: function(data){
         this.extend(data);
-        this.__q = Model.getModel('router.queue',this);
+        this.__q = getModel('router.queue',this);
     },
     queue: function(name,defer){
         this.__q.add(name,defer);
@@ -144,17 +147,17 @@ Model.createModel('router.response', {
     },
     render: function (wrapper, template, data) {
         wrapper = document.querySelector(wrapper);
-        template = View(template).render(data);
+        template = view(template).render(data);
         wrapper.innerHTML = '';
         wrapper.appendChild(template);
-        Control.initControls(wrapper);
+        initControls(wrapper);
         return wrapper;
     }
 });
 /**
  * @name RouterRequest
  */
-Model.createModel('router.request', {
+createModel('router.request', {
     query: function () {
         let query = Location.query();
         this.attr('query',query);
@@ -167,7 +170,7 @@ Model.createModel('router.request', {
         let args = [].slice.call(arguments);
         let name = args.shift();
         let method = args.shift();
-        let model = Model.getModel(name);
+        let model = getModel(name);
         if (method && typeof (model[method]) === 'function') {
             return model[method].apply(model, args);
         }
@@ -188,7 +191,7 @@ Model.createModel('router.request', {
 /**
  * @name Route
  */
-Class.createClass('route', {
+createClass('route', {
     init: function (name) {
         this.params = {};
         this.callbacks = [];
@@ -216,13 +219,13 @@ Class.createClass('route', {
  * @property request
  * @property response
  */
-const Router = Class.createClass('router', {
+const Router = createClass('router', {
     init: function () {
         this._before_ = [];
         this._after_  = [];
         this._routes_ = {};
-        this.request  = Model.getModel('router.request');
-        this.response = Model.getModel('router.response');
+        this.request  = getModel('router.request');
+        this.response = getModel('router.response');
     },
     prepare: function(){
         this.request.attr('path','');
@@ -232,7 +235,7 @@ const Router = Class.createClass('router', {
         this.response.stop();
     },
     route: function (path) {
-        let route = this._routes_[path] || Class.getClass('route', path);
+        let route = this._routes_[path] || getClass('route', path);
         this._routes_[path] = route;
         return route;
     },
@@ -281,7 +284,7 @@ const Router = Class.createClass('router', {
         });
     },
     find: function (path,complete) {
-        let route,result = Class.getClass('route', path);
+        let route,result = getClass('route', path);
         if( complete === true ){
             this.prepare();
         }
@@ -308,4 +311,4 @@ const Router = Class.createClass('router', {
     }
 });
 
-module.exports = Router;
+export {Router}

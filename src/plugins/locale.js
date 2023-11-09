@@ -1,4 +1,5 @@
-const $ = require('../core/jquery');
+import $ from '../core/jquery'
+
 /**
  *
  * @type {{}}
@@ -54,4 +55,4 @@ Locale.get = function (value) {
     return this.data[value] || value;
 };
 
-module.exports = Locale;
+export {Locale}

@@ -1,9 +1,10 @@
-const $ = jQuery;
+import $ from './jquery'
+import {deparam} from "../utils/deparam";
 /**
  *
  * @type {function(*, *=, *=): {}}
  */
-const deparam = require('../utils/deparam');
+
 /**
  *
  * @type {RegExp}
@@ -92,9 +93,9 @@ function setFormData( data ) {
     return this;
 }
 
-module.exports = {
-    deparam: deparam,
-    clean: clean,
-    setFormData: setFormData,
-    getFormData: getFormData
-};
+export {
+    deparam,
+    clean,
+    setFormData,
+    getFormData,
+}

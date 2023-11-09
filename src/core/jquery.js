@@ -1,1 +1,7 @@
-module.exports = window['jQuery']
+/**
+ * @external jQuery
+ * @type function
+ */
+const jQuery = window['jQuery']
+
+export default jQuery

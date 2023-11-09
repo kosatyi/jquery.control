@@ -11,7 +11,7 @@ BackupStorage.prototype = {
         delete this[key];
     },
     clear: function () {
-        for (var key in this) {
+        for (let key in this) {
             if (this.hasOwnProperty(key)) {
                 delete this[key];
             }
@@ -19,6 +19,10 @@ BackupStorage.prototype = {
     }
 };
 
-const StorageProvider = ('localStorage' in global && global['localStorage']) ? global['localStorage'] : new BackupStorage;
+const backupStorage = new BackupStorage()
 
-module.exports = StorageProvider;
+const StorageProvider = ('localStorage' in window && window['localStorage']) ? window['localStorage'] : backupStorage;
+
+export {
+    StorageProvider
+}

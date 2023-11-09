@@ -8,7 +8,7 @@ const fnTest = /xyz/.test(function () {
 
 const superMethod = function(parent,name,method){
     return function () {
-        var temp = this._super, result;
+        let temp = this._super, result;
         this._super = parent[name];
         result = method.apply(this,arguments);
         this._super = temp;
@@ -17,7 +17,7 @@ const superMethod = function(parent,name,method){
 }
 
 const assign = function(target,instance){
-    var prop,proto,parent = target.prototype;
+    let prop,proto,parent = target.prototype;
     init = true;
     proto = new target();
     init = false;
@@ -76,7 +76,7 @@ Class.extend = function extend(instance,name){
     return Class;
 }
 
-Class.createClass = function(name, extend, proto) {
+function createClass(name, extend, proto) {
     if (classes[name]) {
         return classes[name];
     }
@@ -84,9 +84,13 @@ Class.createClass = function(name, extend, proto) {
     return classes[name];
 }
 
-Class.getClass = function(name, data) {
+function getClass(name, data) {
     if (typeof(classes[name]) !== 'function') return null;
     return new classes[name](data);
 }
 
-module.exports = Class;
+export {
+    Class,
+    getClass,
+    createClass,
+}

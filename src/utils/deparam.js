@@ -51,4 +51,4 @@ function deparam(params, coerce, spaces) {
     return obj;
 }
 
-module.exports = deparam;
+export {deparam}

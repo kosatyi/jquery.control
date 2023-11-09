@@ -1,18 +1,20 @@
-const Storage = require('./storage');
+import {StorageProvider} from './storage'
+
 const Cache = {
+    storageProvider: StorageProvider,
     set: function (key, data, ttl) {
         ttl = new Date().getTime() + (ttl * 1000 * 60);
         try {
-            Storage.setItem(['cache',key,'ttl'].join(':'), ttl);
-            Storage.setItem(['cache',key].join(':'), JSON.stringify(data));
+            StorageProvider.setItem(['cache',key,'ttl'].join(':'), ttl);
+            StorageProvider.setItem(['cache',key].join(':'), JSON.stringify(data));
         } catch (e) {
-            Storage.clear();
+            StorageProvider.clear();
         }
         return this;
     },
     expire: function (key) {
-        Storage.removeItem(['cache', key, 'ttl'].join(':'));
-        Storage.removeItem(['cache', key].join(':'));
+        StorageProvider.removeItem(['cache', key, 'ttl'].join(':'));
+        StorageProvider.removeItem(['cache', key].join(':'));
         return this;
     },
     exist: function (key) {
@@ -24,8 +26,8 @@ const Cache = {
     },
     list: function () {
         let key,list = [];
-        for (key in Storage) {
-            if (Storage.hasOwnProperty(key)) {
+        for (key in StorageProvider) {
+            if (StorageProvider.hasOwnProperty(key)) {
                 if (key.indexOf('cache:') !== -1 && key.indexOf(':ttl') === -1) {
                     list.push(key.slice(6));
                 }
@@ -40,4 +42,6 @@ const Cache = {
     }
 };
 
-module.exports = Cache;
+export {
+    Cache
+}

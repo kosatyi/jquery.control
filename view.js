@@ -1,9 +1,9 @@
-var walker = require('filewalker');
-var fs = require('fs');
+const walker = require('filewalker');
+const fs = require('fs');
 
 module.exports = function(dir,output,done){
-    var list   = [];
-    var base     = dir.concat('/');
+    const list   = [];
+    const base     = dir.concat('/');
     walker(dir).on('file', function(path){
         list.push(path);
     }).on('done',function(){

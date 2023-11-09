@@ -1,6 +1,7 @@
-const $ = require('./jquery');
-const Class = require('./class');
-const {compareArrays, forEach} = require('../utils')
+import $ from './jquery'
+import {Class} from './class'
+import {compareArrays, forEach} from '../utils'
+
 const classes  = {};
 const controls = [];
 const ATTR = 'control';
@@ -185,8 +186,8 @@ const Control = Class.extend({
         this.element.removeClass(this.name.split('.').join('-'));
         this.element.removeData();
     },
-    canBeDestroyed: function () {
-        return $.contains(document,this.element.get(0)) === false
+    canBeDestroyed: function (other) {
+        return $(document).contains(this.element.get(0)) === false
     }
 });
 
@@ -226,7 +227,7 @@ function createControl(name, extend, proto) {
  *
  * @param name
  * @param params
- * @returns new {Control}
+ * @returns {Control|undefined}
  */
 function initControl(name, params) {
     if (typeof(classes[name]) !== 'function') return;
@@ -234,25 +235,22 @@ function initControl(name, params) {
 }
 
 function initControls(element){
-    Control.cleanControls();
+    cleanControls();
     Array.prototype.slice.call(element.querySelectorAll(ATTR_SELECTOR))
-        .sort(Control.sortControls)
+        .sort(sortControls)
         .forEach(function (item) {
             item.getAttribute(ATTR).split(',').forEach(function (name) {
-                Control.initControl(name, item);
+                initControl(name, item);
             });
             item.removeAttribute(ATTR);
         });
 }
 
-Control.createControl = createControl;
-
-Control.sortControls  = sortControls;
-
-Control.cleanControls = cleanControls;
-
-Control.initControl   = initControl;
-
-Control.initControls  = initControls;
-
-module.exports = Control;
+export {
+    createControl,
+    sortControls,
+    cleanControls,
+    initControl,
+    initControls,
+    Control,
+}

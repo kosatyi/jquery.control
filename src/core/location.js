@@ -1,10 +1,9 @@
-const $ = require('./jquery');
-
-const deparam = require('../utils/deparam');
+import $ from './jquery'
+import {deparam} from "../utils/deparam";
 
 let skip  = false;
 
-const instance = {
+const Location = {
     prefix: '#',
     type: 'hash',
     event:'hashchange.location',
@@ -104,5 +103,4 @@ const instance = {
     }
 };
 
-
-module.exports = instance;
+export {Location}

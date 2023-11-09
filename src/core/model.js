@@ -1,6 +1,6 @@
-const $ = require('./jquery');
-const Class = require('./class');
-const {isArray,isPlainObject,forEach,sortObject} = require('../utils')
+import $ from './jquery'
+import {Class} from './class'
+import {isArray, isPlainObject,forEach,sortObject} from '../utils'
 /**
  *
  * @type {{}}
@@ -167,22 +167,26 @@ const Model = Class.extend({
  * @param proto
  * @returns {*}
  */
-Model.createModel = function (name, extend, proto) {
+function createModel(name, extend, proto) {
     if (classes[name]) {
         return classes[name];
     }
     classes[name] = (proto ? classes[extend] : Model).extend(proto ? proto : extend, name);
     return classes[name];
-};
+}
 /**
  *
  * @param name
  * @param data
  * @returns {*}
  */
-Model.getModel = function (name, data) {
+function getModel(name, data) {
     if (typeof (classes[name]) !== 'function') return;
     return new classes[name](data);
-};
+}
 
-module.exports = Model;
+export {
+    Model,
+    getModel,
+    createModel,
+}

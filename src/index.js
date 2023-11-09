@@ -1,22 +1,29 @@
-const $        = jQuery;
-const Class    = require('./core/class');
-const Location = require('./core/location');
-const Control  = require('./core/control');
-const Model    = require('./core/model');
-const Locale   = require('./plugins/locale');
-const Form     = require('./core/form');
-const Router   = require('./core/router');
-const View     = require('./core/view');
+import $ from './core/jquery';
+import {Class, createClass, getClass} from './core/class'
+import {Location} from './core/location'
+import {cleanControls, Control, createControl, initControl, initControls} from './core/control'
+import {createModel, getModel, Model} from './core/model'
+import {Locale} from './plugins/locale'
+import {setFormData, getFormData, deparam} from './core/form'
+import {Router} from './core/router'
+import {view} from './core/view'
+import {Cache} from './utils/cache'
+
+/**
+ * @memberOf $
+ * @property storageCache
+ */
+$.storageCache = Cache
 /**
  * @memberOf $
  * @property Class
  */
-$.Class   = Class;
+$.Class = Class;
 /**
  * @memberOf $
  * @property Model
  */
-$.Model   = Model;
+$.Model = Model;
 /**
  * @memberOf $
  * @property Control
@@ -26,48 +33,54 @@ $.Control = Control;
  * @memberOf $
  * @property Router
  */
-$.Router  = Router;
+$.Router = Router;
 /**
  * @memberOf $
  * @property createClass
  * @type {function(*=, *, *): (*)}
  */
-$.createClass = Class.createClass;
+$.createClass = createClass;
 /**
  * @memberOf $
  * @property getClass
  * @type {function(*, *=): (undefined|*)}
  */
-$.getClass = Class.getClass;
+$.getClass = getClass;
 /**
  * @memberOf $
  * @property createModel
  * @type {function(*=, *, *): (*)}
  */
-$.createModel = Model.createModel;
+$.createModel = createModel;
 /**
  * @memberOf $
  * @property getModel
  * @type {function(*, *=): (undefined|*)}
  */
-$.getModel = Model.getModel;
+$.getModel = getModel;
 /**
  *
  * @type {function(*=, *, *): *}
  */
-$.createControl = Control.createControl;
+$.createControl = createControl;
 /**
  * @memberOf $
  * @property initControl
  * @type {function(*, *=): (undefined|*)}
  */
-$.initControl  = Control.initControl;
+$.initControl = initControl;
+/**
+ * @memberOf $
+ * @property initControl
+ * @type {function(*, *=): (undefined|*)}
+ */
+$.cleanControls = cleanControls;
 /**
  * @memberOf $
  * @property location
  * @type {Object}
  */
-$.location     = Location;
+$.location = Location;
 /**
  * @memberOf $
  * @property locale
@@ -77,28 +90,24 @@ $.locale = Locale;
 /**
  * @memberOf $
  */
-$.deparam = Form.deparam
+$.deparam = deparam
 /**
  * @memberOf $
  * @property ejs
  * @deprecated
  */
-$.ejs = View;
+$.ejs = view;
 /**
  *
  */
 $.fn.extend({
-    setFormData: Form.setFormData,
-    getFormData: Form.getFormData,
-    initControls:function(){
-        this.each(function(index,element){
-            Control.initControls(element);
+    setFormData: setFormData,
+    getFormData: getFormData,
+    initControls: function () {
+        this.each(function (index, element) {
+            initControls(element);
         });
     }
 });
-/**
- *
- * @type {jQuery}
- */
-module.exports = $;
 
+export default $;

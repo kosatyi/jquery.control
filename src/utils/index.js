@@ -1,4 +1,4 @@
-const $ = require('../core/jquery');
+import $ from '../core/jquery'
 /**
  *
  * @param value
@@ -50,10 +50,19 @@ const compareArrays = function(a1,a2){
     return arrayStringify(a1) === arrayStringify(a2);
 };
 
-exports.arrayStringify = sortObject
-exports.compareArrays = compareArrays
+export {
+    sortObject as arrayStringify,
+    sortObject,
+    compareArrays,
+    isPlainObject,
+    isArray,
+    forEach
+}
 
-exports.sortObject = sortObject
-exports.isPlainObject = isPlainObject
-exports.isArray = isArray
-exports.forEach = forEach
+// exports.arrayStringify = sortObject
+// exports.compareArrays = compareArrays
+//
+// exports.sortObject = sortObject
+// exports.isPlainObject = isPlainObject
+// exports.isArray = isArray
+// exports.forEach = forEach

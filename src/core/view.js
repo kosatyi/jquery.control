@@ -1,7 +1,6 @@
-const $ = require('./jquery');
-
-const Class = require('./class');
-const Control = require("./control");
+import $ from './jquery'
+import {Class} from './class'
+import {initControl} from './control'
 
 const listPreload = {};
 const listView = {};
@@ -144,7 +143,7 @@ const compile = function (text, name) {
     ].join('|') + '|$', 'g');
     let index = 0;
     let source = "__p+='";
-    (text||'').replace(matcher, function (match, escape, interpolate, evaluate, offset) {
+    (text || '').replace(matcher, function (match, escape, interpolate, evaluate, offset) {
         source += escapeString(text.slice(index, offset));
         if (escape) source += "'\n+((__t=(" + escape + "))==null?'':escapeExpr(__t))+\n'";
         if (interpolate) source += "'\n+((__t=(" + interpolate + "))==null?'':__t)+\n'";
@@ -179,7 +178,7 @@ const compile = function (text, name) {
  * @param html
  * @return {DocumentFragment}
  */
-const fragment = function(html) {
+const fragment = function (html) {
     let template = document.createElement('template');
     if ('content' in template) {
         template.innerHTML = html;
@@ -226,14 +225,14 @@ const template = Class.extend({
  *
  * @type {string[]}
  */
-const defaultExtList  = ['ejs', 'html', 'svg', 'css', 'js'];
+const defaultExtList = ['ejs', 'html', 'svg', 'css', 'js'];
 /**
  *
  * @param list
  * @return {RegExp}
  */
-const resolverExp = function(list){
-    return new RegExp('^(.+)(\\.)('+list.join('|')+')$');
+const resolverExp = function (list) {
+    return new RegExp('^(.+)(\\.)(' + list.join('|') + ')$');
 };
 /**
  *
@@ -242,27 +241,27 @@ const resolverExp = function(list){
 const resolver = {
     ext: defaultExtList,
     exp: resolverExp(defaultExtList),
-    set: function(list){
+    set: function (list) {
         this.ext = list;
         this.exp = resolverExp(list);
     },
-    name: function(name){
+    name: function (name) {
         return String(name).replace(this.exp, '$1');
     },
-    get: function(name){
+    get: function (name) {
         let i = 0, c = false;
         let e = this.ext;
         let l = listView;
         let n = this.name(name);
         for (; i < e.length; i++) {
-            c = l[[n,e[i]].join('.')];
+            c = l[[n, e[i]].join('.')];
             if (c) {
                 break;
             }
         }
         return c;
     },
-    source: function(name){
+    source: function (name) {
         return this.get(name) || name;
     }
 }
@@ -276,7 +275,7 @@ const helpers = {
      * @returns  {*}
      */
     $include: function (url, data) {
-        return view(stringFormat(url,this)).renderHTML(data);
+        return view(stringFormat(url, this)).renderHTML(data);
     },
     /**
      * @memberOf window
@@ -322,7 +321,7 @@ const helpers = {
      */
     $control: function (tag, control, params) {
         return this.$view(tag, function (element) {
-            Control.initControl(control, element);
+            initControl(control, element);
         });
     }
 };
@@ -360,4 +359,4 @@ view.helper = function (name, func) {
     helpers[name] = func;
 };
 
-module.exports = view;
+export {view}

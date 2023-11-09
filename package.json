@@ -9,6 +9,9 @@
     "@kosatyi/rollup": "^0.0.7",
     "jquery": "^3.6.3"
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "rollup -c",
     "watch": "rollup -c -w",
@@ -17,9 +20,9 @@
     "version": "npm run build && git add -A dist",
     "postversion": "git push && git push --tags"
   },
-  "main": "dist/jquery.control.js",
-  "browser": "dist/jquery.control.min.js",
-  "dependencies": {
-    "rollup-plugin-shim": "^1.0.0"
-  }
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "browser": "dist/umd/index.js",
+  "minified": "dist/umd/index.min.js",
+  "dependencies": {}
 }
