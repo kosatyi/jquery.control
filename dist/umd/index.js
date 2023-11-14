@@ -1276,8 +1276,13 @@
         this.list = {};
         this.defer = jQuery.Deferred();
         this.defer.progress(function (name, response) {
-          this.complete(name, response);
+          if (this.has(name)) {
+            this.complete(name, response);
+          }
         });
+      },
+      has(name) {
+        return this.list.hasOwnProperty(name);
       },
       empty: function () {
         return jQuery.isEmptyObject(this.list);
@@ -1290,17 +1295,10 @@
           this.start();
         }
       },
-      has(name) {
-        return this.list.hasOwnProperty(name);
-      },
       remove: function (name) {
         if (this.has(name)) {
           delete this.list[name];
         }
-        return this;
-      },
-      reject(name) {
-        this.remove(name);
         return this;
       },
       then: function (fn) {
@@ -1312,9 +1310,10 @@
         return this;
       },
       stop: function () {
-        Object.keys(this.list).forEach(name => {
-          this.reject(name);
-        });
+        Object.keys(this.list).forEach(function (name) {
+          this.remove(name);
+        }, this);
+        this.list = {};
       },
       add: function (name, defer) {
         let queue = this;

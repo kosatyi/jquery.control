@@ -73,8 +73,13 @@ createModel('router.queue', {
         this.list     = {};
         this.defer    = $.Deferred();
         this.defer.progress(function(name,response){
-            this.complete(name,response);
+            if( this.has(name) ) {
+                this.complete(name,response);
+            }
         });
+    },
+    has(name){
+        return this.list.hasOwnProperty(name)
     },
     empty: function(){
         return $.isEmptyObject(this.list);
@@ -88,14 +93,8 @@ createModel('router.queue', {
         }
     },
     remove: function(name){
-        if( this.list.hasOwnProperty(name) ) {
+        if( this.has(name) ) {
             delete this.list[name];
-        }
-        return this;
-    },
-    reject(name){
-        if( this.list.hasOwnProperty(name) ) {
-            this.list[name].reject();
         }
         return this;
     },
@@ -109,7 +108,7 @@ createModel('router.queue', {
     },
     stop: function(){
         Object.keys(this.list).forEach(function(name){
-            this.reject(name).remove(name);
+            this.remove(name);
         },this);
         this.list = {};
     },
