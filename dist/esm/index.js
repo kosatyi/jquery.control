@@ -1284,16 +1284,17 @@ createModel('router.queue', {
       this.start();
     }
   },
+  has(name) {
+    return this.list.hasOwnProperty(name);
+  },
   remove: function (name) {
-    if (this.list.hasOwnProperty(name)) {
+    if (this.has(name)) {
       delete this.list[name];
     }
     return this;
   },
   reject(name) {
-    if (this.list.hasOwnProperty(name)) {
-      this.list[name].reject();
-    }
+    this.remove(name);
     return this;
   },
   then: function (fn) {
@@ -1305,18 +1306,15 @@ createModel('router.queue', {
     return this;
   },
   stop: function () {
-    Object.keys(this.list).forEach(function (name) {
-      this.reject(name).remove(name);
-    }, this);
-    this.list = {};
+    Object.keys(this.list).forEach(name => {
+      this.reject(name);
+    });
   },
   add: function (name, defer) {
     let queue = this;
     queue.list[name] = defer.then(function (content) {
-      console.log('success', arguments);
       queue.defer.notifyWith(queue, [name, content]);
     }, function () {
-      console.log('error', arguments);
       queue.defer.notifyWith(queue, [name]);
     });
     return queue;

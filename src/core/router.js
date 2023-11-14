@@ -116,10 +116,8 @@ createModel('router.queue', {
     add: function(name,defer){
         let queue = this;
         queue.list[name] = defer.then(function(content){
-            console.log('success',arguments);
             queue.defer.notifyWith(queue,[name,content]);
         },function(){
-            console.log('error',arguments);
             queue.defer.notifyWith(queue,[name]);
         });
         return queue;
