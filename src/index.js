@@ -110,4 +110,21 @@ $.fn.extend({
     }
 });
 
-export default $;
+export {
+    $,
+    deparam,
+    Class,
+    Locale,
+    Location,
+    Model,
+    Control,
+    Cache,
+    createClass,
+    getModel,
+    getClass,
+    cleanControls,
+    createControl,
+    createModel,
+    initControl
+}
+

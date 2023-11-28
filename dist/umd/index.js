@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-    typeof define === 'function' && define.amd ? define(factory) :
-    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.jQueryControl = factory());
-})(this, (function () { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+    typeof define === 'function' && define.amd ? define(['exports'], factory) :
+    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.jQueryControl = {}));
+})(this, (function (exports) { 'use strict';
 
     /**
      * @external jQuery
@@ -1677,6 +1677,22 @@
       }
     });
 
-    return jQuery;
+    exports.$ = jQuery;
+    exports.Cache = Cache;
+    exports.Class = Class;
+    exports.Control = Control;
+    exports.Locale = Locale;
+    exports.Location = Location;
+    exports.Model = Model;
+    exports.cleanControls = cleanControls;
+    exports.createClass = createClass;
+    exports.createControl = createControl;
+    exports.createModel = createModel;
+    exports.deparam = deparam;
+    exports.getClass = getClass;
+    exports.getModel = getModel;
+    exports.initControl = initControl;
+
+    Object.defineProperty(exports, '__esModule', { value: true });
 
 }));

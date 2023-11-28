@@ -1671,4 +1671,4 @@ jQuery.fn.extend({
   }
 });
 
-export { jQuery as default };
+export { jQuery as $, Cache, Class, Control, Locale, Location, Model, cleanControls, createClass, createControl, createModel, deparam, getClass, getModel, initControl };

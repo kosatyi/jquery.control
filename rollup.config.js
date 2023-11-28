@@ -16,11 +16,12 @@ export default {
         {
             file: pkg.module,
             format: 'esm',
+            exports: 'named'
         },
         {
             file: pkg.main,
             format: 'cjs',
-            exports: 'auto',
+            exports: 'named',
         },
         {
             file: pkg.browser,

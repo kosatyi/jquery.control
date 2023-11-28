@@ -1,5 +1,7 @@
 'use strict';
 
+Object.defineProperty(exports, '__esModule', { value: true });
+
 /**
  * @external jQuery
  * @type function
@@ -1673,4 +1675,18 @@ jQuery.fn.extend({
   }
 });
 
-module.exports = jQuery;
+exports.$ = jQuery;
+exports.Cache = Cache;
+exports.Class = Class;
+exports.Control = Control;
+exports.Locale = Locale;
+exports.Location = Location;
+exports.Model = Model;
+exports.cleanControls = cleanControls;
+exports.createClass = createClass;
+exports.createControl = createControl;
+exports.createModel = createModel;
+exports.deparam = deparam;
+exports.getClass = getClass;
+exports.getModel = getModel;
+exports.initControl = initControl;
