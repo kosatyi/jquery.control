@@ -1,9 +1,8 @@
 import $ from './core/jquery';
 import {Class, createClass, getClass} from './core/class'
-import {Location} from './core/location'
+import {urlLocation} from './core/location'
 import {cleanControls, Control, createControl, initControl, initControls} from './core/control'
 import {createModel, getModel, Model} from './core/model'
-import {Locale} from './plugins/locale'
 import {setFormData, getFormData, deparam} from './core/form'
 import {Router} from './core/router'
 import {view} from './core/view'
@@ -80,13 +79,7 @@ $.cleanControls = cleanControls;
  * @property location
  * @type {Object}
  */
-$.location = Location;
-/**
- * @memberOf $
- * @property locale
- * @type {Object}
- */
-$.locale = Locale;
+$.location = urlLocation;
 /**
  * @memberOf $
  */
@@ -114,8 +107,7 @@ export {
     $,
     deparam,
     Class,
-    Locale,
-    Location,
+    urlLocation,
     Model,
     Control,
     Cache,

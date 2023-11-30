@@ -1,12 +1,12 @@
 import $ from './jquery'
 import {deparam} from "../utils/deparam";
 
-let skip  = false;
+let skip = false;
 
-const Location = {
+const urlLocation = {
     prefix: '#',
     type: 'hash',
-    event:'hashchange.location',
+    event: 'hashchange',
     callbacks: [],
     initialize: false,
     url: function (url, replace) {
@@ -49,34 +49,28 @@ const Location = {
             return this.part(0);
         }
     },
-    json: function(value,replace,silent){
-        let href  = this.href();
+    json: function (value, replace, silent) {
+        let href = this.href();
         let chunk = href.split('#')[0].split('?')[1] || '{}';
         if (arguments.length) {
-            value = value ? [this.part(0),JSON.stringify(value)].join('?') : this.part(0);
+            value = value ? [this.part(0), JSON.stringify(value)].join('?') : this.part(0);
             this[replace ? 'replace' : 'assign'](value, silent);
         } else {
-            try{
+            try {
                 chunk = decodeURIComponent(chunk);
                 chunk = JSON.parse(chunk);
-            } catch(e){
+            } catch (e) {
                 chunk = {};
             }
             return chunk;
         }
     },
-    proxy: function (callback) {
-        return (function (cx) {
-            return function () {
-                return cx[callback].apply(cx, arguments);
-            }
-        })(this);
-    },
     bind: function (callback) {
         this.callbacks.push(callback);
+        this.changeHandler = this.changeHandler || this.change.bind(this)
         if (this.initialize === false) {
+            window.addEventListener(this.event,this.changeHandler)
             this.initialize = true;
-            $(window).on(this.event,this.proxy('change'));
         }
     },
     unbind: function (callback) {
@@ -95,7 +89,7 @@ const Location = {
         }
         if (this.callbacks.length) {
             for (index in this.callbacks) {
-                if(this.callbacks.hasOwnProperty(index)){
+                if (this.callbacks.hasOwnProperty(index)) {
                     this.callbacks[index].call(this);
                 }
             }
@@ -103,4 +97,4 @@ const Location = {
     }
 };
 
-export {Location}
+export {urlLocation}

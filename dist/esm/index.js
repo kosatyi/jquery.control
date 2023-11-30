@@ -150,10 +150,10 @@ function deparam(params, coerce, spaces) {
 }
 
 let skip = false;
-const Location = {
+const urlLocation = {
   prefix: '#',
   type: 'hash',
-  event: 'hashchange.location',
+  event: 'hashchange',
   callbacks: [],
   initialize: false,
   url: function (url, replace) {
@@ -211,18 +211,12 @@ const Location = {
       return chunk;
     }
   },
-  proxy: function (callback) {
-    return function (cx) {
-      return function () {
-        return cx[callback].apply(cx, arguments);
-      };
-    }(this);
-  },
   bind: function (callback) {
     this.callbacks.push(callback);
+    this.changeHandler = this.changeHandler || this.change.bind(this);
     if (this.initialize === false) {
+      window.addEventListener(this.event, this.changeHandler);
       this.initialize = true;
-      jQuery(window).on(this.event, this.proxy('change'));
     }
   },
   unbind: function (callback) {
@@ -729,60 +723,6 @@ function getModel(name, data) {
 
 /**
  *
- * @type {{}}
- */
-const cache = {};
-/**
- *
- * @type {object}
- */
-const Locale = {
-  defaults: 'en',
-  current: 'en',
-  path: 'locales/',
-  file: '/translation.json',
-  data: {}
-};
-/**
- *
- * @param lang
- * @returns {*}
- */
-Locale.load = function (lang) {
-  cache[lang] = cache[lang] || jQuery.ajax({
-    context: this,
-    url: this.path.concat(lang).concat(this.file)
-  });
-  cache[lang].then(function (data) {
-    this.data = data;
-  });
-  return cache[lang];
-};
-Locale.config = function (params) {
-  jQuery.extend(true, Locale, params);
-  return Locale;
-};
-/**
- *
- * @param lang
- * @returns {Locale}
- */
-Locale.lang = function (lang) {
-  this.current = lang;
-  return this;
-};
-
-/**
- *
- * @param value
- * @returns {*}
- */
-Locale.get = function (value) {
-  return this.data[value] || value;
-};
-
-/**
- *
  * @type {function(*, *=, *=): {}}
  */
 
@@ -1267,13 +1207,13 @@ const pathMatch = function (regexp, path) {
  */
 const listener = {
   hashchange: function (run) {
-    Location.bind(function () {
+    urlLocation.bind(function () {
       run(this.path());
     });
-    if (Location.part(0) === '') {
-      Location.assign('/');
+    if (urlLocation.part(0) === '') {
+      urlLocation.assign('/');
     } else {
-      run(Location.path());
+      run(urlLocation.path());
     }
   }
 };
@@ -1372,7 +1312,7 @@ createModel('router.response', {
  */
 createModel('router.request', {
   query: function () {
-    let query = Location.query();
+    let query = urlLocation.query();
     this.attr('query', query);
     return query;
   },
@@ -1660,13 +1600,7 @@ jQuery.cleanControls = cleanControls;
  * @property location
  * @type {Object}
  */
-jQuery.location = Location;
-/**
- * @memberOf $
- * @property locale
- * @type {Object}
- */
-jQuery.locale = Locale;
+jQuery.location = urlLocation;
 /**
  * @memberOf $
  */
@@ -1690,4 +1624,4 @@ jQuery.fn.extend({
   }
 });
 
-export { jQuery as $, Cache, Class, Control, Locale, Location, Model, cleanControls, createClass, createControl, createModel, deparam, getClass, getModel, initControl };
+export { jQuery as $, Cache, Class, Control, Model, cleanControls, createClass, createControl, createModel, deparam, getClass, getModel, initControl, urlLocation };

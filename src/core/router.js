@@ -3,7 +3,7 @@ import {createClass, getClass} from "./class";
 import {createModel,getModel} from "./model";
 import {view} from './view'
 import {initControls} from "./control";
-import {Location} from "./location";
+import {urlLocation} from "./location";
 
 /**
  *
@@ -51,13 +51,13 @@ const pathMatch = function (regexp, path) {
  */
 const listener = {
     hashchange: function (run) {
-        Location.bind(function () {
+        urlLocation.bind(function () {
             run(this.path());
         });
-        if (Location.part(0) === '') {
-            Location.assign('/');
+        if (urlLocation.part(0) === '') {
+            urlLocation.assign('/');
         } else {
-            run(Location.path());
+            run(urlLocation.path());
         }
     }
 };
@@ -156,7 +156,7 @@ createModel('router.response', {
  */
 createModel('router.request', {
     query: function () {
-        let query = Location.query();
+        let query = urlLocation.query();
         this.attr('query',query);
         return query;
     },
