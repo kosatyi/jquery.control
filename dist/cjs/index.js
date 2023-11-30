@@ -13,6 +13,24 @@ let init = false;
 const fnTest = /xyz/.test(function () {
   return 'xyz';
 }.toString()) ? /\b_super\b/ : /.*/;
+const setPrototypeOf = function (o, p) {
+  const setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind(null) : function _setPrototypeOf(o, p) {
+    o.__proto__ = p;
+    return o;
+  };
+  return setPrototypeOf(o, p);
+};
+const newConstructor = function (parent, params) {
+  const a = [null];
+  a.push.apply(a, params);
+  return Function.bind.apply(parent, a);
+};
+const newInstance = function (parent, params, extend) {
+  const Constructor = newConstructor(parent, params);
+  const instance = new Constructor();
+  if (extend) setPrototypeOf(instance, extend.prototype);
+  return instance;
+};
 const superMethod = function (parent, name, method) {
   return function () {
     let temp = this._super,
@@ -42,13 +60,14 @@ const assign = function (target, instance) {
   return proto;
 };
 /**
+ * @type {function}
  * @name Class
  * @constructor
  */
 const Class = function () {};
 Class.prototype._super = function () {};
 Class.prototype.instance = function (params) {
-  return new this.constructor(params);
+  return newInstance(this.constructor, arguments);
 };
 Class.prototype.proxy = function (fn) {
   fn = typeof fn == 'string' ? this[fn] : fn;
@@ -500,8 +519,7 @@ function cleanControls(force) {
  *
  * @param name
  * @param extend
- * @param proto
- * @returns {Control}
+ * @param [proto]
  */
 function createControl(name, extend, proto) {
   if (classes$1[name]) {
@@ -511,15 +529,16 @@ function createControl(name, extend, proto) {
   classes$1[name] = (proto ? classes$1[extend] : Control).extend(proto ? proto : extend, name);
   return classes$1[name];
 }
+
 /**
  *
  * @param name
- * @param params
  * @returns {Control|undefined}
  */
-function initControl(name, params) {
+function initControl(name) {
+  const params = [].slice.call(arguments, 1);
   if (typeof classes$1[name] !== 'function') return;
-  return new classes$1[name](params);
+  return newInstance(classes$1[name], params);
 }
 function initControls(element) {
   cleanControls();

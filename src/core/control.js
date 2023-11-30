@@ -1,5 +1,5 @@
 import $ from './jquery'
-import {Class} from './class'
+import {Class, newInstance} from './class'
 import {compareArrays, forEach} from '../utils'
 
 const classes  = {};
@@ -212,8 +212,7 @@ function cleanControls(force) {
  *
  * @param name
  * @param extend
- * @param proto
- * @returns {Control}
+ * @param [proto]
  */
 function createControl(name, extend, proto) {
     if (classes[name]) {
@@ -223,15 +222,16 @@ function createControl(name, extend, proto) {
     classes[name] = (proto ? classes[extend] : Control).extend(proto ? proto : extend, name);
     return classes[name];
 }
+
 /**
  *
  * @param name
- * @param params
  * @returns {Control|undefined}
  */
-function initControl(name, params) {
+function initControl(name) {
+    const params = [].slice.call(arguments,1)
     if (typeof(classes[name]) !== 'function') return;
-    return new classes[name](params);
+    return newInstance(classes[name],params);
 }
 
 function initControls(element){
