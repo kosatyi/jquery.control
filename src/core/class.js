@@ -1,6 +1,6 @@
-const classes = {};
+const classRegistry = {};
 
-let init = false;
+const initState = {value:false};
 
 const fnTest = /xyz/.test(function () {
     return 'xyz';
@@ -40,9 +40,9 @@ const superMethod = function(parent,name,method){
 
 const assign = function(target,instance){
     let prop,proto,parent = target.prototype;
-    init = true;
+    initState.value = true;
     proto = new target();
-    init = false;
+    initState.value = false;
     for (prop in instance) {
         if (instance.hasOwnProperty(prop)) {
             if (typeof (parent[prop]) == 'function' &&
@@ -90,7 +90,7 @@ Class.extend = function extend(instance,name){
      * @property {Function} init
      */
     function Class(){
-        if (!init && this.init) this.init.apply(this, arguments);
+        if (!initState.value && this.init) this.init.apply(this, arguments);
     }
     Class.prototype = assign(this,instance);
     Class.prototype.name = name;
@@ -98,18 +98,27 @@ Class.extend = function extend(instance,name){
     Class.extend = extend;
     return Class;
 }
-
+/**
+ * @template {string} T
+ * @param {T} name
+ * @param extend
+ * @param [proto]
+ */
 function createClass(name, extend, proto) {
-    if (classes[name]) {
-        return classes[name];
+    if (classRegistry[name]) {
+        return classRegistry[name];
     }
-    classes[name] = (proto ? classes[extend] : Class).extend(proto ? proto : extend, name);
-    return classes[name];
+    /**
+     * @type {extend & proto}
+     * @extends Class
+     */
+    classRegistry[name] = (proto ? classRegistry[extend] : Class).extend(proto ? proto : extend, name);
+    return classRegistry[name];
 }
 
 function getClass(name, data) {
-    if (typeof(classes[name]) !== 'function') return null;
-    return new classes[name](data);
+    if (typeof(classRegistry[name]) !== 'function') return null;
+    return new classRegistry[name](data);
 }
 
 export {

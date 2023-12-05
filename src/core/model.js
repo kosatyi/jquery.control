@@ -2,10 +2,10 @@ import $ from './jquery'
 import {Class} from './class'
 import {isArray, isPlainObject, forEach, sortObject, isFunction} from '../utils'
 /**
- *
- * @type {{}}
+ * @template {string} T
+ * @type {{T:Model}}
  */
-const classes = {};
+const modelRegistry = {};
 
 /**
  * @name Model
@@ -161,28 +161,31 @@ const Model = Class.extend({
     }
 });
 /**
- *
- * @param name
+ * @template {string} T
+ * @param {T} name
  * @param extend
- * @param proto
- * @returns {*}
+ * @param [proto]
  */
 function createModel(name, extend, proto) {
-    if (classes[name]) {
-        return classes[name];
+    if (modelRegistry[name]) {
+        return modelRegistry[name];
     }
-    classes[name] = (proto ? classes[extend] : Model).extend(proto ? proto : extend, name);
-    return classes[name];
+    /**
+     * @type {extend & proto}
+     * @extends Model
+     */
+    modelRegistry[name] = (proto ? modelRegistry[extend] : Model).extend(proto ? proto : extend, name);
+    return modelRegistry[name];
 }
+
 /**
- *
- * @param name
- * @param data
- * @returns {*}
+ * @template {string} T
+ * @param {T} name
+ * @param {object} [data]
  */
 function getModel(name, data) {
-    if (typeof (classes[name]) !== 'function') return;
-    return new classes[name](data);
+    if (typeof (modelRegistry[name]) !== 'function') return;
+    return new modelRegistry[name](data);
 }
 
 export {

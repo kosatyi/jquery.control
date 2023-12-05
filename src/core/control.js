@@ -2,7 +2,11 @@ import $ from './jquery'
 import {Class, newInstance} from './class'
 import {compareArrays, forEach} from '../utils'
 
-const classes  = {};
+/**
+ *
+ * @type {{string:Control}}
+ */
+const controlRegistry  = {};
 const controls = [];
 const ATTR = 'control';
 const ATTR_SELECTOR = '['+ ATTR +']';
@@ -209,29 +213,34 @@ function cleanControls(force) {
 }
 
 /**
- *
- * @param name
+ * @template {string} T
+ * @param {T} name
  * @param extend
  * @param [proto]
  */
 function createControl(name, extend, proto) {
-    if (classes[name]) {
+    if (controlRegistry[name]) {
         console.info('control with name [%s] is already exist', name);
-        return classes[name];
+        return controlRegistry[name];
     }
-    classes[name] = (proto ? classes[extend] : Control).extend(proto ? proto : extend, name);
-    return classes[name];
+    /**
+     * @type {extend & proto}
+     * @extends Control
+     */
+    controlRegistry[name] = (proto ? controlRegistry[extend] : Control).extend(proto ? proto : extend, name);
+    return controlRegistry[name];
 }
 
 /**
- *
- * @param name
- * @returns {Control|undefined}
+ * @template {string} T
+ * @param {T} name
+ * @returns {controlRegistry[T] & Control}
  */
+
 function initControl(name) {
     const params = [].slice.call(arguments,1)
-    if (typeof(classes[name]) !== 'function') return;
-    return newInstance(classes[name],params);
+    if (typeof(controlRegistry[name]) !== 'function') return;
+    return newInstance(controlRegistry[name],params);
 }
 
 function initControls(element){

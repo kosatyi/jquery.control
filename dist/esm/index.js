@@ -4,8 +4,10 @@
  */
 const jQuery = window['jQuery'];
 
-const classes$2 = {};
-let init = false;
+const classRegistry = {};
+const initState = {
+  value: false
+};
 const fnTest = /xyz/.test(function () {
   return 'xyz';
 }.toString()) ? /\b_super\b/ : /.*/;
@@ -41,9 +43,9 @@ const assign = function (target, instance) {
   let prop,
     proto,
     parent = target.prototype;
-  init = true;
+  initState.value = true;
   proto = new target();
-  init = false;
+  initState.value = false;
   for (prop in instance) {
     if (instance.hasOwnProperty(prop)) {
       if (typeof parent[prop] == 'function' && typeof instance[prop] == 'function' && fnTest.test(instance[prop])) {
@@ -80,7 +82,7 @@ Class.extend = function extend(instance, name) {
    * @property {Function} init
    */
   function Class() {
-    if (!init && this.init) this.init.apply(this, arguments);
+    if (!initState.value && this.init) this.init.apply(this, arguments);
   }
   Class.prototype = assign(this, instance);
   Class.prototype.name = name;
@@ -88,16 +90,26 @@ Class.extend = function extend(instance, name) {
   Class.extend = extend;
   return Class;
 };
+/**
+ * @template {string} T
+ * @param {T} name
+ * @param extend
+ * @param [proto]
+ */
 function createClass(name, extend, proto) {
-  if (classes$2[name]) {
-    return classes$2[name];
+  if (classRegistry[name]) {
+    return classRegistry[name];
   }
-  classes$2[name] = (proto ? classes$2[extend] : Class).extend(proto ? proto : extend, name);
-  return classes$2[name];
+  /**
+   * @type {extend & proto}
+   * @extends Class
+   */
+  classRegistry[name] = (proto ? classRegistry[extend] : Class).extend(proto ? proto : extend, name);
+  return classRegistry[name];
 }
 function getClass(name, data) {
-  if (typeof classes$2[name] !== 'function') return null;
-  return new classes$2[name](data);
+  if (typeof classRegistry[name] !== 'function') return null;
+  return new classRegistry[name](data);
 }
 
 function deparam(params, coerce, spaces) {
@@ -304,7 +316,11 @@ const compareArrays = function (a1, a2) {
 // exports.isArray = isArray
 // exports.forEach = forEach
 
-const classes$1 = {};
+/**
+ *
+ * @type {{string:Control}}
+ */
+const controlRegistry = {};
 const controls = [];
 const ATTR = 'control';
 const ATTR_SELECTOR = '[' + ATTR + ']';
@@ -509,29 +525,34 @@ function cleanControls(force) {
 }
 
 /**
- *
- * @param name
+ * @template {string} T
+ * @param {T} name
  * @param extend
  * @param [proto]
  */
 function createControl(name, extend, proto) {
-  if (classes$1[name]) {
+  if (controlRegistry[name]) {
     console.info('control with name [%s] is already exist', name);
-    return classes$1[name];
+    return controlRegistry[name];
   }
-  classes$1[name] = (proto ? classes$1[extend] : Control).extend(proto ? proto : extend, name);
-  return classes$1[name];
+  /**
+   * @type {extend & proto}
+   * @extends Control
+   */
+  controlRegistry[name] = (proto ? controlRegistry[extend] : Control).extend(proto ? proto : extend, name);
+  return controlRegistry[name];
 }
 
 /**
- *
- * @param name
- * @returns {Control|undefined}
+ * @template {string} T
+ * @param {T} name
+ * @returns {controlRegistry[T] & Control}
  */
+
 function initControl(name) {
   const params = [].slice.call(arguments, 1);
-  if (typeof classes$1[name] !== 'function') return;
-  return newInstance(classes$1[name], params);
+  if (typeof controlRegistry[name] !== 'function') return;
+  return newInstance(controlRegistry[name], params);
 }
 function initControls(element) {
   cleanControls();
@@ -544,10 +565,10 @@ function initControls(element) {
 }
 
 /**
- *
- * @type {{}}
+ * @template {string} T
+ * @type {{T:Model}}
  */
-const classes = {};
+const modelRegistry = {};
 
 /**
  * @name Model
@@ -700,28 +721,31 @@ const Model = Class.extend({
   }
 });
 /**
- *
- * @param name
+ * @template {string} T
+ * @param {T} name
  * @param extend
- * @param proto
- * @returns {*}
+ * @param [proto]
  */
 function createModel(name, extend, proto) {
-  if (classes[name]) {
-    return classes[name];
+  if (modelRegistry[name]) {
+    return modelRegistry[name];
   }
-  classes[name] = (proto ? classes[extend] : Model).extend(proto ? proto : extend, name);
-  return classes[name];
+  /**
+   * @type {extend & proto}
+   * @extends Model
+   */
+  modelRegistry[name] = (proto ? modelRegistry[extend] : Model).extend(proto ? proto : extend, name);
+  return modelRegistry[name];
 }
+
 /**
- *
- * @param name
- * @param data
- * @returns {*}
+ * @template {string} T
+ * @param {T} name
+ * @param {object} [data]
  */
 function getModel(name, data) {
-  if (typeof classes[name] !== 'function') return;
-  return new classes[name](data);
+  if (typeof modelRegistry[name] !== 'function') return;
+  return new modelRegistry[name](data);
 }
 
 /**
