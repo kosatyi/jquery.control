@@ -257,6 +257,9 @@
     const isArray = function (value) {
       return jQuery.isArray(value);
     };
+    const isFunction = function (value) {
+      return typeof value === 'function';
+    };
     /**
      *
      * @param value
@@ -612,7 +615,7 @@
           len = arguments.length;
         for (; i < name.length; i++) {
           if (data && data.hasOwnProperty(name[i])) {
-            if (data[name[i]] && typeof data[name[i]]['attr'] === 'function') {
+            if (data[name[i]] && isFunction(data[name[i]]['attr'])) {
               tmp = [key.split('.').slice(i + 1).join('.')];
               len === 2 && tmp.push(value);
               return data[name[i]].attr.apply(data[name[i]], tmp);
@@ -658,7 +661,7 @@
           let prop;
           for (prop in data) {
             if (data.hasOwnProperty(prop)) {
-              if (parent[prop] && typeof parent[prop]['attrs'] === 'function') {
+              if (parent[prop] && isFunction(parent[prop]['attrs'])) {
                 parent[prop].attrs(data[prop], prop);
               } else {
                 if (isArray(data[prop]) || isPlainObject(data[prop])) {
@@ -682,7 +685,7 @@
           let prop;
           for (prop in data) {
             if (data.hasOwnProperty(prop)) {
-              if (data[prop] && typeof data[prop]['serialize'] === 'function') {
+              if (data[prop] && isFunction(data[prop]['serialize'])) {
                 result[prop] = data[prop].serialize();
               } else {
                 if (isArray(data[prop]) || isPlainObject(data[prop])) {
@@ -696,7 +699,7 @@
             }
           }
           return result;
-        }.call(this, {}, this.$data);
+        }.call(this, isArray(this.$data) ? [] : {}, this.$data);
       },
       stringify: function () {
         return JSON.stringify(this.serialize());
