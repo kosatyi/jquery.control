@@ -7,6 +7,9 @@ import $ from '../core/jquery'
 const isArray = function (value) {
     return $.isArray(value);
 };
+const isFunction = function(value){
+    return typeof value === 'function'
+}
 /**
  *
  * @param value
@@ -55,6 +58,7 @@ export {
     sortObject,
     compareArrays,
     isPlainObject,
+    isFunction,
     isArray,
     forEach
 }
