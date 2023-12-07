@@ -504,8 +504,8 @@ const Control = Class.extend({
     this.element.removeClass(this.name.split('.').join('-'));
     this.element.removeData();
   },
-  canBeDestroyed: function (other) {
-    return jQuery(document).contains(this.element.get(0)) === false;
+  canBeDestroyed: function () {
+    return jQuery.contains(document, this.element.get(0)) === false;
   }
 });
 function sortControls(a, b) {
@@ -1638,9 +1638,6 @@ jQuery.deparam = deparam;
  * @deprecated
  */
 jQuery.ejs = view;
-/**
- *
- */
 jQuery.fn.extend({
   setFormData: setFormData,
   getFormData: getFormData,
