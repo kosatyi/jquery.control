@@ -90,9 +90,7 @@ $.deparam = deparam
  * @deprecated
  */
 $.ejs = view;
-/**
- *
- */
+
 $.fn.extend({
     setFormData: setFormData,
     getFormData: getFormData,

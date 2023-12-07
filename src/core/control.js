@@ -190,8 +190,8 @@ const Control = Class.extend({
         this.element.removeClass(this.name.split('.').join('-'));
         this.element.removeData();
     },
-    canBeDestroyed: function (other) {
-        return $(document).contains(this.element.get(0)) === false
+    canBeDestroyed: function () {
+        return $.contains(document, this.element.get(0)) === false
     }
 });
 
