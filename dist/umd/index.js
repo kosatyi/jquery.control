@@ -1562,97 +1562,28 @@
       }
     };
 
-    /**
-     * @memberOf $
-     * @property storageCache
-     */
     jQuery.storageCache = Cache;
-    /**
-     * @memberOf $
-     * @property Class
-     */
     jQuery.Class = Class;
-    /**
-     * @memberOf $
-     * @property Model
-     */
     jQuery.Model = Model;
-    /**
-     * @memberOf $
-     * @property Control
-     */
     jQuery.Control = Control;
-    /**
-     * @memberOf $
-     * @property Router
-     */
     jQuery.Router = Router;
-    /**
-     * @memberOf $
-     * @property createClass
-     * @type {function(*=, *, *): (*)}
-     */
     jQuery.createClass = createClass;
-    /**
-     * @memberOf $
-     * @property getClass
-     * @type {function(*, *=): (undefined|*)}
-     */
     jQuery.getClass = getClass;
-    /**
-     * @memberOf $
-     * @property createModel
-     * @type {function(*=, *, *): (*)}
-     */
     jQuery.createModel = createModel;
-    /**
-     * @memberOf $
-     * @property getModel
-     * @type {function(*, *=): (undefined|*)}
-     */
     jQuery.getModel = getModel;
-    /**
-     *
-     * @type {function(*=, *, *): *}
-     */
     jQuery.createControl = createControl;
-    /**
-     * @memberOf $
-     * @property initControl
-     * @type {function(*, *=): (undefined|*)}
-     */
     jQuery.initControl = initControl;
-    /**
-     * @memberOf $
-     * @property initControl
-     * @type {function(*, *=): (undefined|*)}
-     */
     jQuery.cleanControls = cleanControls;
-    /**
-     * @memberOf $
-     * @property location
-     * @type {Object}
-     */
     jQuery.location = urlLocation;
-    /**
-     * @memberOf $
-     */
     jQuery.deparam = deparam;
-    /**
-     * @memberOf $
-     * @property ejs
-     * @deprecated
-     */
     jQuery.ejs = view;
-    jQuery.fn.extend({
-      setFormData: setFormData,
-      getFormData: getFormData,
-      initControls: function () {
-        this.each(function (index, element) {
-          initControls(element);
-        });
-      }
-    });
+    jQuery.fn.setFormData = setFormData;
+    jQuery.fn.getFormData = getFormData;
+    jQuery.fn.initControls = function () {
+      this.each(function (index, element) {
+        initControls(element);
+      });
+    };
 
     exports.$ = jQuery;
     exports.Cache = Cache;
