@@ -38,6 +38,7 @@ export {
     urlLocation,
     Model,
     Control,
+    Router,
     Cache,
     createClass,
     getModel,
