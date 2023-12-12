@@ -1579,4 +1579,4 @@ jQuery.fn.initControls = function () {
   });
 };
 
-export { jQuery as $, Cache, Class, Control, Model, cleanControls, createClass, createControl, createModel, deparam, getClass, getModel, initControl, urlLocation };
+export { jQuery as $, Cache, Class, Control, Model, Router, cleanControls, createClass, createControl, createModel, deparam, getClass, getModel, initControl, urlLocation };

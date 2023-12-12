@@ -1588,6 +1588,7 @@ exports.Cache = Cache;
 exports.Class = Class;
 exports.Control = Control;
 exports.Model = Model;
+exports.Router = Router;
 exports.cleanControls = cleanControls;
 exports.createClass = createClass;
 exports.createControl = createControl;
