@@ -1,63 +1,23 @@
-import $ from './jquery'
 import {createClass, getClass} from "./class";
 import {createModel,getModel} from "./model";
 import {view} from './view'
 import {initControls} from "./control";
-import {urlLocation} from "./location";
+import {UrlLocation} from "./location";
+import {pathToRegexp,pathMatch} from './utils'
 
-/**
- *
- * @param path
- * @returns {RegExp}
- */
-const pathToRegexp = function (path) {
-    let result, keys = [], parse = function (_, slsh, format, key, capture, opt) {
-        keys.push({name: key, optional: !!opt});
-        slsh = slsh || '';
-        return '' + (opt ? '' : slsh) + '(?:' + (opt ? slsh : '') + (format || '') + (capture || (format && '([^/.]+?)' || '([^/]+?)')) + ')' + (opt || '');
-    };
-    path = path.concat('/?');
-    path = path.replace(/\/\(/g, '(?:/')
-        .replace(/\+/g, '__plus__')
-        .replace(/(\/)?(\.)?:(\w+)(?:(\(.*?\)))?(\?)?/g, parse)
-        .replace(/([\/.])/g, '\\$1')
-        .replace(/__plus__/g, '(.+)')
-        .replace(/\*/g, '(.*)')
-        .replace(/@num/g, '\\d+')
-        .replace(/@word/g, '\\w+');
-    result = new RegExp('^' + path + '$', '');
-    result.keys = keys;
-    return result;
-};
-/**
- *
- * @param regexp
- * @param path
- * @returns {{}|boolean}
- */
-const pathMatch = function (regexp, path) {
-    let key;
-    let match = regexp.exec(path);
-    let params = {};
-    if (!match) return false;
-    for (var i = 1, len = match.length; i < len; ++i)
-        if ((key = regexp.keys[i - 1]))
-            params[key.name] = (typeof (match[i]) === 'string') ? decodeURIComponent(match[i]) : match[i];
-    return params;
-};
 /**
  *
  * @type {{hashchange: listener.hashchange}}
  */
 const listener = {
     hashchange: function (run) {
-        urlLocation.bind(function () {
-            run(this.path());
+        UrlLocation.bind(function () {
+            run(UrlLocation.path());
         });
-        if (urlLocation.part(0) === '') {
-            urlLocation.assign('/');
+        if (UrlLocation.part(0) === '') {
+            UrlLocation.assign('/');
         } else {
-            run(urlLocation.path());
+            run(UrlLocation.path());
         }
     }
 };
@@ -65,62 +25,68 @@ const listener = {
  * @name RouterQueue
  */
 createModel('router.queue', {
-    init: function(response){
-        this.response = response;
-        this.start();
+    init(response) {
+        this.callbacks = []
+        this.response = response
+        this.reset()
     },
-    start: function(){
-        this.list     = {};
-        this.defer    = $.Deferred();
-        this.defer.progress(function(name,response){
-            if( this.has(name) ) {
-                this.complete(name,response);
-            }
-        });
+    reset() {
+        this.list = {}
+        this.callbacks.length = 0
     },
-    has(name){
+    has(name) {
         return this.list.hasOwnProperty(name)
     },
-    empty: function(){
-        return $.isEmptyObject(this.list);
+    empty() {
+        return Object.keys(this.list).length === 0
     },
-    complete: function(name,value){
-        this.remove(name);
-        this.response.attr(name,value);
-        if( this.empty() ){
-            this.defer.resolve();
-            this.start();
+    complete(name, value) {
+        this.remove(name)
+        this.response.attr(name, value)
+        if (this.empty()) {
+            this.callbacks.forEach((callback) => {
+                this.callbacks.splice(this.callbacks.indexOf(callback), 1)
+                callback()
+            })
         }
     },
-    remove: function(name){
-        if( this.has(name) ) {
-            delete this.list[name];
+    remove(name) {
+        if (this.has(name)) {
+            delete this.list[name]
         }
-        return this;
+        return this
     },
-    then: function(fn){
-        if( this.empty() ) {
-            fn();
+    then(fn) {
+        if (this.empty()) {
+            fn()
         } else {
-            this.defer.then(fn);
+            this.callbacks.push(fn)
         }
-        return this;
+        return this
     },
-    stop: function(){
-        Object.keys(this.list).forEach(function(name){
-            this.remove(name);
-        },this);
-        this.list = {};
+    stop() {
+        Object.keys(this.list).forEach((name) => {
+            this.remove(name)
+        })
+        this.list = {}
+        this.callbacks.length = 0
     },
-    add: function(name,defer){
-        let queue = this;
-        queue.list[name] = defer.then(function(content){
-            queue.defer.notifyWith(queue,[name,content]);
-        },function(){
-            queue.defer.notifyWith(queue,[name]);
-        });
-        return queue;
-    }
+    notify(name, response) {
+        if (this.has(name)) {
+            this.complete(name, response)
+        }
+    },
+    add(name, promise) {
+        this.list[name] = promise.then(
+            (content) => {
+                this.notify(name, content)
+            },
+            () => {
+                this.notify(name)
+            }
+        )
+        return this
+    },
 });
 /**
  * @name RouterResponse
@@ -128,18 +94,18 @@ createModel('router.queue', {
 createModel('router.response', {
     init: function(data){
         this.extend(data);
-        this.__q = getModel('router.queue',this);
+        this.defer = getModel('router.queue',this);
     },
     queue: function(name,defer){
-        this.__q.add(name,defer);
+        this.defer.add(name,defer);
         return this;
     },
     then: function(callback){
-        this.__q.then(callback);
+        this.defer.then(callback);
         return this;
     },
     stop: function () {
-        this.__q.stop();
+        this.defer.stop();
         return this;
     },
     render: function (wrapper, template, data) {
@@ -156,7 +122,7 @@ createModel('router.response', {
  */
 createModel('router.request', {
     query: function () {
-        let query = urlLocation.query();
+        let query = UrlLocation.query();
         this.attr('query',query);
         return query;
     },
@@ -180,7 +146,7 @@ createModel('router.request', {
         this.attr('path',value);
     },
     params: function(data){
-        data = $.extend({},this.alt('parent',{}),data);
+        data = Object.assign({},this.alt('parent',{}),data || {});
         this.attr('params',data);
         this.attr('parent',data);
     }

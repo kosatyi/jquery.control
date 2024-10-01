@@ -4,4 +4,5 @@
  */
 const jQuery = window['jQuery']
 
+
 export default jQuery

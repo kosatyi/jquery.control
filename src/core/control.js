@@ -1,6 +1,6 @@
 import $ from './jquery'
 import {Class, newInstance} from './class'
-import {compareArrays, forEach} from '../utils'
+import {compareArrays, forEach} from './utils'
 
 /**
  *

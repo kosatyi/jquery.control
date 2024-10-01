@@ -1,6 +1,6 @@
 import $ from './jquery'
 import {Class} from './class'
-import {isArray, isPlainObject, forEach, sortObject, isFunction} from '../utils'
+import {isArray, isPlainObject, forEach, sortObject, isFunction} from './utils'
 /**
  * @template {string} T
  * @type {{T:Model}}

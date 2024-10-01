@@ -1,5 +1,5 @@
-import $ from './jquery'
-import {deparam} from "../utils/deparam";
+import {deparam} from "./deparam";
+import {isPlainObject,isArray,isFunction} from './utils'
 /**
  *
  * @type {function(*, *=, *=): {}}
@@ -18,7 +18,7 @@ const breaker = /[^\[\]]+|\[\]$/g;
  * @returns {*|null}
  */
 function attr(data, attr) {
-    var i = 0,
+    let i = 0,
         name = (attr || '').split('.'),
         prop = name.pop();
     for (; i < name.length; i++) {
@@ -36,13 +36,13 @@ function attr(data, attr) {
  * @param obj
  * @returns {*}
  */
-function clean(obj) {
+export function clean(obj) {
     let prop;
     for (prop in obj) {
         if (obj.hasOwnProperty(prop)) {
             if (obj[prop].length === 0) {
-                if($.isArray(obj)) obj.splice(prop, 1);
-                if($.isPlainObject(obj)) delete obj[prop];
+                if(isArray(obj)) obj.splice(prop, 1);
+                if(isPlainObject(obj)) delete obj[prop];
             } else if (typeof (obj[prop]) == 'object') {
                 clean(obj[prop]);
             }
@@ -57,9 +57,9 @@ function clean(obj) {
  * @param coerce
  * @returns {*}
  */
-function getFormData(filter,coerce){
-    let form   = $.map(this.serializeArray(), function (field) {
-        return [field.name, encodeURIComponent(field.value)].join('=');
+export function getFormData(filter,coerce){
+    let form   = this.serializeArray().map(function(field){
+        return [field.name, encodeURIComponent(field.value)].join('=')
     }).join('&');
     let params = deparam(form, coerce, false);
     return filter === true ? clean(params) : params;
@@ -70,9 +70,9 @@ function getFormData(filter,coerce){
  * @param data
  * @returns {setFormData}
  */
-function setFormData( data ) {
-    this.find('[name]').each(function(){
-        let current = $(this);
+export function setFormData( data ) {
+    this.find('[name]').each(function(index,element){
+        let current = $(element);
         let parts = current.attr('name').match(breaker);
         let value = attr(data,parts.join('.'));
         if (value) {
@@ -81,8 +81,8 @@ function setFormData( data ) {
                     current.attr("checked", true);
                 }
             } else if (current.is(":checkbox")) {
-                value = $.isArray(value) ? value : [value];
-                if ($.inArray(current.val(), value) > -1) {
+                value = isArray(value) ? value : [value];
+                if (value.indexOf(current.val()) > -1) {
                     current.attr("checked", true);
                 }
             } else {
@@ -93,9 +93,3 @@ function setFormData( data ) {
     return this;
 }
 
-export {
-    deparam,
-    clean,
-    setFormData,
-    getFormData,
-}

@@ -1,51 +1,46 @@
-import $ from './core/jquery';
-import {Class, createClass, getClass} from './core/class'
-import {urlLocation} from './core/location'
-import {cleanControls, Control, createControl, initControl, initControls} from './core/control'
-import {createModel, getModel, Model} from './core/model'
-import {setFormData, getFormData, deparam} from './core/form'
-import {Router} from './core/router'
-import {view} from './core/view'
-import {Cache} from './utils/cache'
+import $ from './core/jquery'
+import { pathToRegexp, pathMatch } from './core/utils'
+import { Class, createClass, getClass } from './core/class'
+import { getFormData, setFormData } from './core/form'
+import { UrlLocation } from './core/location'
+import { createModel, getModel, Model } from './core/model'
+import { deparam } from './core/deparam'
+import { Router } from './core/router'
+import { view } from './core/view'
+import { StorageCache } from './utils/cache'
+import {
+    cleanControls,
+    Control,
+    createControl,
+    initControl,
+    initControls,
+} from './core/control'
 
-$.storageCache = Cache
-$.Class = Class;
-$.Model = Model;
-$.Control = Control;
-$.Router = Router;
-$.createClass = createClass;
-$.getClass = getClass;
-$.createModel = createModel;
-$.getModel = getModel;
-$.createControl = createControl;
-$.initControl = initControl;
-$.cleanControls = cleanControls;
-$.location = urlLocation;
-$.deparam = deparam
-$.ejs = view;
 $.fn.setFormData = setFormData
 $.fn.getFormData = getFormData
 $.fn.initControls = function () {
     this.each(function (index, element) {
-        initControls(element);
-    });
+        initControls(element)
+    })
 }
 
 export {
     $,
     deparam,
+    view,
     Class,
-    urlLocation,
+    UrlLocation,
     Model,
     Control,
     Router,
-    Cache,
+    StorageCache,
+    pathToRegexp,
+    pathMatch,
     createClass,
     getModel,
     getClass,
     cleanControls,
     createControl,
     createModel,
-    initControl
+    initControl,
 }
-

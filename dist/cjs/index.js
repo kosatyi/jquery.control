@@ -8,13 +8,129 @@ Object.defineProperty(exports, '__esModule', { value: true });
  */
 const jQuery = window['jQuery'];
 
+/**
+ *
+ * @param value
+ * @return {*}
+ */
+function isArray(value) {
+  return Array.isArray(value);
+}
+
+/**
+ *
+ * @param value
+ * @return {boolean}
+ */
+function isFunction(value) {
+  return typeof value === 'function';
+}
+/**
+ *
+ * @param value
+ * @returns {*}
+ */
+
+function isPlainObject(value) {
+  if (!value || toString.call(value) !== "[object Object]") {
+    return false;
+  }
+  const proto = Object.getPrototypeOf(value);
+  if (!proto) return true;
+  const func = Object.hasOwnProperty.call(proto, 'constructor') && proto.constructor;
+  return typeof func === "function" && Object.hasOwnProperty.toString.call(func) === Object.hasOwnProperty.toString.call(Object);
+}
+/**
+ *
+ * @param object
+ * @param callback
+ * @param thisArg
+ */
+function forEach$1(object, callback, thisArg) {
+  let prop,
+    context = thisArg || callback;
+  for (prop in object) {
+    if (object.hasOwnProperty(prop)) {
+      callback.call(context, object[prop], prop);
+    }
+  }
+}
+
+/**
+ *
+ * @param obj
+ * @returns {{}}
+ */
+function sortObject(obj) {
+  return Object.keys(obj).sort().reduce(function (result, key) {
+    result[key] = obj[key];
+    return result;
+  }, {});
+}
+
+/**
+ *
+ * @param a
+ * @return {string}
+ */
+function arrayStringify(a) {
+  return JSON.stringify(a.slice().sort());
+}
+
+/**
+ *
+ * @param a1
+ * @param a2
+ * @return {boolean}
+ */
+function compareArrays(a1, a2) {
+  return arrayStringify(a1) === arrayStringify(a2);
+}
+
+/**
+ *
+ * @param path
+ * @return {RegExp}
+ */
+function pathToRegexp(path) {
+  let result,
+    keys = [];
+  function parse(_, slash, format, key, capture, opt) {
+    keys.push({
+      name: key,
+      optional: !!opt
+    });
+    slash = slash || '';
+    return '' + (opt ? '' : slash) + '(?:' + (opt ? slash : '') + (format || '') + (capture || format && '([^/.]+?)' || '([^/]+?)') + ')' + (opt || '');
+  }
+  path = path.concat('/?');
+  path = path.replace(/\/\(/g, '(?:/').replace(/\+/g, '__plus__').replace(/(\/)?(\.)?:(\w+)(?:(\(.*?\)))?(\?)?/g, parse).replace(/([\/.])/g, '\\$1').replace(/__plus__/g, '(.+)').replace(/\*/g, '(.*)').replace(/@num/g, '\\d+').replace(/@word/g, '\\w+');
+  result = new RegExp('^' + path + '$', '');
+  result.keys = keys;
+  return result;
+}
+/**
+ *
+ * @param regexp
+ * @param path
+ * @returns {{}|boolean}
+ */
+function pathMatch(regexp, path) {
+  let key;
+  let match = regexp.exec(path);
+  let params = {};
+  if (!match) return false;
+  for (let i = 1, len = match.length; i < len; ++i) if (key = regexp.keys[i - 1]) params[key.name] = typeof match[i] === 'string' ? decodeURIComponent(match[i]) : match[i];
+  return params;
+}
+
 const classRegistry = {};
 const initState = {
   value: false
 };
-const fnTest = /xyz/.test(function () {
-  return 'xyz';
-}.toString()) ? /\b_super\b/ : /.*/;
+const hasSuper = fn => {
+  return !!~fn.toString().indexOf('this._super(');
+};
 const setPrototypeOf = function (o, p) {
   const setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind(null) : function _setPrototypeOf(o, p) {
     o.__proto__ = p;
@@ -52,7 +168,7 @@ const assign = function (target, instance) {
   initState.value = false;
   for (prop in instance) {
     if (instance.hasOwnProperty(prop)) {
-      if (typeof parent[prop] == 'function' && typeof instance[prop] == 'function' && fnTest.test(instance[prop])) {
+      if (isFunction(parent[prop]) && isFunction(instance[prop]) && hasSuper(instance[prop])) {
         proto[prop] = superMethod(parent, prop, instance[prop]);
       } else {
         proto[prop] = instance[prop];
@@ -67,17 +183,19 @@ const assign = function (target, instance) {
  * @constructor
  */
 const Class = function () {};
-Class.prototype._super = function () {};
-Class.prototype.instance = function (params) {
-  return newInstance(this.constructor, arguments);
-};
-Class.prototype.proxy = function (fn) {
-  fn = typeof fn == 'string' ? this[fn] : fn;
-  return function (cx, cb) {
-    return function () {
-      return cb.apply(cx, [this].concat([].slice.call(arguments)));
-    };
-  }(this, fn);
+Class.prototype = {
+  _super() {},
+  instance() {
+    return newInstance(this.constructor, arguments);
+  },
+  proxy(fn) {
+    fn = typeof fn == 'string' ? this[fn] : fn;
+    return function (cx, cb) {
+      return function () {
+        return cb.apply(cx, [this].concat([].slice.call(arguments)));
+      };
+    }(this, fn);
+  }
 };
 Class.extend = function extend(instance, name) {
   /**
@@ -94,6 +212,7 @@ Class.extend = function extend(instance, name) {
   Class.extend = extend;
   return Class;
 };
+
 /**
  * @template {string} T
  * @param {T} name
@@ -165,8 +284,101 @@ function deparam(params, coerce, spaces) {
   return obj;
 }
 
+/**
+ *
+ * @type {function(*, *=, *=): {}}
+ */
+
+/**
+ *
+ * @type {RegExp}
+ */
+const breaker = /[^\[\]]+|\[\]$/g;
+
+/**
+ *
+ * @param data
+ * @param attr
+ * @returns {*|null}
+ */
+function attr(data, attr) {
+  let i = 0,
+    name = (attr || '').split('.'),
+    prop = name.pop();
+  for (; i < name.length; i++) {
+    if (data && data.hasOwnProperty(name[i])) {
+      data = data[name[i]];
+    } else {
+      break;
+    }
+  }
+  return data ? data[prop] : null;
+}
+
+/**
+ *
+ * @param obj
+ * @returns {*}
+ */
+function clean(obj) {
+  let prop;
+  for (prop in obj) {
+    if (obj.hasOwnProperty(prop)) {
+      if (obj[prop].length === 0) {
+        if (isArray(obj)) obj.splice(prop, 1);
+        if (isPlainObject(obj)) delete obj[prop];
+      } else if (typeof obj[prop] == 'object') {
+        clean(obj[prop]);
+      }
+    }
+  }
+  return obj;
+}
+
+/**
+ *
+ * @param filter
+ * @param coerce
+ * @returns {*}
+ */
+function getFormData(filter, coerce) {
+  let form = this.serializeArray().map(function (field) {
+    return [field.name, encodeURIComponent(field.value)].join('=');
+  }).join('&');
+  let params = deparam(form, coerce, false);
+  return filter === true ? clean(params) : params;
+}
+
+/**
+ *
+ * @param data
+ * @returns {setFormData}
+ */
+function setFormData(data) {
+  this.find('[name]').each(function (index, element) {
+    let current = $(element);
+    let parts = current.attr('name').match(breaker);
+    let value = attr(data, parts.join('.'));
+    if (value) {
+      if (current.is(":radio")) {
+        if (current.val() === value) {
+          current.attr("checked", true);
+        }
+      } else if (current.is(":checkbox")) {
+        value = isArray(value) ? value : [value];
+        if (value.indexOf(current.val()) > -1) {
+          current.attr("checked", true);
+        }
+      } else {
+        current.val(value);
+      }
+    }
+  });
+  return this;
+}
+
 let skip = false;
-const urlLocation = {
+const UrlLocation = {
   prefix: '#',
   type: 'hash',
   event: 'hashchange',
@@ -197,7 +409,7 @@ const urlLocation = {
   },
   query: function (value, replace, silent) {
     if (arguments.length) {
-      value = value ? [this.part(0), jQuery.param(value)].join('?') : this.part(0);
+      value = value ? [this.part(0), $.param(value)].join('?') : this.part(0);
       this[replace ? 'replace' : 'assign'](value, silent);
     } else {
       return deparam(this.part(1));
@@ -260,65 +472,188 @@ const urlLocation = {
 };
 
 /**
- *
- * @param value
- * @return {*}
+ * @template {string} T
+ * @type {{T:Model}}
  */
-const isArray = function (value) {
-  return jQuery.isArray(value);
-};
-const isFunction = function (value) {
-  return typeof value === 'function';
-};
+const modelRegistry = {};
+
 /**
- *
- * @param value
- * @returns {*}
+ * @name Model
+ * @type {Class|*}
  */
-const isPlainObject = function (value) {
-  return jQuery.isPlainObject(value);
-};
-/**
- *
- * @param object
- * @param callback
- * @param thisArg
- */
-const forEach$1 = function (object, callback, thisArg) {
-  let prop,
-    context = thisArg || callback;
-  for (prop in object) {
-    if (object.hasOwnProperty(prop)) {
-      callback.call(context, object[prop], prop);
+const Model = Class.extend({
+  init: function (data) {
+    this.extend(data);
+  },
+  extend: function (data) {
+    if (data) {
+      this.$data = data;
+    } else {
+      this.$data = {};
     }
+  },
+  alt: function (prop, defaults) {
+    prop = this.attr(prop);
+    return typeof prop === 'undefined' ? defaults : prop;
+  },
+  ns: function (name) {
+    let context = this;
+    let chunk = name.split('.');
+    let child = this.attr(chunk.slice(0, -1).join('.'));
+    if (child instanceof Model) {
+      context = child;
+    }
+    return [context, chunk.slice(-1).join('.')];
+  },
+  on: function (name, callback) {
+    let ns = this.ns(name);
+    jQuery.event.add(ns[0], ns[1], callback);
+    return this;
+  },
+  off: function (name, callback) {
+    let ns = this.ns(name);
+    jQuery.event.remove(ns[0], ns[1], callback);
+    return this;
+  },
+  trigger: function (name, data) {
+    let ns = this.ns(name);
+    jQuery.event.trigger(ns[1], data, ns[0], true);
+    return this;
+  },
+  $update: function () {},
+  $change: function () {},
+  defer: function () {
+    return jQuery.Deferred();
+  },
+  resolve: function () {
+    return this.defer().resolve(this);
+  },
+  attr: function (key, value) {
+    let i = 0,
+      tmp,
+      data = this.$data,
+      name = (key || '').split('.'),
+      prop = name.pop(),
+      len = arguments.length;
+    for (; i < name.length; i++) {
+      if (data && data.hasOwnProperty(name[i])) {
+        if (data[name[i]] && isFunction(data[name[i]]['attr'])) {
+          tmp = [key.split('.').slice(i + 1).join('.')];
+          len === 2 && tmp.push(value);
+          return data[name[i]].attr.apply(data[name[i]], tmp);
+        } else {
+          data = data[name[i]];
+        }
+      } else {
+        if (len === 2) {
+          data = data[name[i]] = {};
+        } else {
+          break;
+        }
+      }
+    }
+    if (len === 1) {
+      return data ? data[prop] : undefined;
+    }
+    if (len === 2) {
+      tmp = data[prop];
+      data[prop] = value;
+      this.$change(key, value, tmp);
+    }
+    return this;
+  },
+  eachItem: function (args) {
+    let name = args[1] ? args[0] : null;
+    let callback = args[1] ? args[1] : args[0];
+    let value = name ? this.alt(name, []) : this.$data;
+    return {
+      value: sortObject(value),
+      isArray: isArray(value),
+      callback: callback
+    };
+  },
+  each: function () {
+    let each = this.eachItem(arguments);
+    forEach$1(each.value, function (value, key) {
+      each.callback(this.instance(value), value, key);
+    }, this);
+  },
+  attrs: function (props) {
+    this.$data = function callback(data, parent, path) {
+      let prop;
+      for (prop in data) {
+        if (data.hasOwnProperty(prop)) {
+          if (parent[prop] && isFunction(parent[prop]['attrs'])) {
+            parent[prop].attrs(data[prop], prop);
+          } else {
+            if (isArray(data[prop]) || isPlainObject(data[prop])) {
+              if (isArray(data[prop])) parent[prop] = parent[prop] || [];
+              if (isPlainObject(data[prop])) parent[prop] = parent[prop] || {};
+              callback.call(this, data[prop], parent[prop], prop);
+            } else {
+              parent[prop] = data[prop];
+            }
+          }
+          this.$change(path ? path.concat('.', prop) : prop, data[prop], parent[prop]);
+        }
+      }
+      return parent;
+    }.call(this, props, this.$data);
+    this.$update(props, this.$data);
+    return this;
+  },
+  serialize: function () {
+    return function callback(result, data) {
+      let prop;
+      for (prop in data) {
+        if (data.hasOwnProperty(prop)) {
+          if (data[prop] && isFunction(data[prop]['serialize'])) {
+            result[prop] = data[prop].serialize();
+          } else {
+            if (isArray(data[prop]) || isPlainObject(data[prop])) {
+              if (isArray(data[prop])) result[prop] = [];
+              if (isPlainObject(data[prop])) result[prop] = {};
+              callback.call(this, result[prop], data[prop]);
+            } else {
+              result[prop] = data[prop];
+            }
+          }
+        }
+      }
+      return result;
+    }.call(this, isArray(this.$data) ? [] : {}, this.$data);
+  },
+  stringify: function () {
+    return JSON.stringify(this.serialize());
   }
-};
+});
+/**
+ * @template {string} T
+ * @param {T} name
+ * @param extend
+ * @param [proto]
+ */
+function createModel(name, extend, proto) {
+  if (modelRegistry[name]) {
+    return modelRegistry[name];
+  }
+  /**
+   * @type {extend & proto}
+   * @extends Model
+   */
+  modelRegistry[name] = (proto ? modelRegistry[extend] : Model).extend(proto ? proto : extend, name);
+  return modelRegistry[name];
+}
 
 /**
- *
- * @param obj
- * @returns {{}}
+ * @template {string} T
+ * @param {T} name
+ * @param {object} [data]
  */
-const sortObject = function (obj) {
-  return Object.keys(obj).sort().reduce(function (result, key) {
-    result[key] = obj[key];
-    return result;
-  }, {});
-};
-const arrayStringify = function (a) {
-  return JSON.stringify(a.slice().sort());
-};
-const compareArrays = function (a1, a2) {
-  return arrayStringify(a1) === arrayStringify(a2);
-};
-
-// exports.arrayStringify = sortObject
-// exports.compareArrays = compareArrays
-//
-// exports.sortObject = sortObject
-// exports.isPlainObject = isPlainObject
-// exports.isArray = isArray
-// exports.forEach = forEach
+function getModel(name, data) {
+  if (typeof modelRegistry[name] !== 'function') return;
+  return new modelRegistry[name](data);
+}
 
 /**
  *
@@ -566,283 +901,6 @@ function initControls(element) {
     });
     item.removeAttribute(ATTR);
   });
-}
-
-/**
- * @template {string} T
- * @type {{T:Model}}
- */
-const modelRegistry = {};
-
-/**
- * @name Model
- * @type {Class|*}
- */
-const Model = Class.extend({
-  init: function (data) {
-    this.extend(data);
-  },
-  extend: function (data) {
-    if (data) {
-      this.$data = data;
-    } else {
-      this.$data = {};
-    }
-  },
-  alt: function (prop, defaults) {
-    prop = this.attr(prop);
-    return typeof prop === 'undefined' ? defaults : prop;
-  },
-  ns: function (name) {
-    let context = this;
-    let chunk = name.split('.');
-    let child = this.attr(chunk.slice(0, -1).join('.'));
-    if (child instanceof Model) {
-      context = child;
-    }
-    return [context, chunk.slice(-1).join('.')];
-  },
-  on: function (name, callback) {
-    let ns = this.ns(name);
-    jQuery.event.add(ns[0], ns[1], callback);
-    return this;
-  },
-  off: function (name, callback) {
-    let ns = this.ns(name);
-    jQuery.event.remove(ns[0], ns[1], callback);
-    return this;
-  },
-  trigger: function (name, data) {
-    let ns = this.ns(name);
-    jQuery.event.trigger(ns[1], data, ns[0], true);
-    return this;
-  },
-  $update: function () {},
-  $change: function () {},
-  defer: function () {
-    return jQuery.Deferred();
-  },
-  resolve: function () {
-    return this.defer().resolve(this);
-  },
-  attr: function (key, value) {
-    let i = 0,
-      tmp,
-      data = this.$data,
-      name = (key || '').split('.'),
-      prop = name.pop(),
-      len = arguments.length;
-    for (; i < name.length; i++) {
-      if (data && data.hasOwnProperty(name[i])) {
-        if (data[name[i]] && isFunction(data[name[i]]['attr'])) {
-          tmp = [key.split('.').slice(i + 1).join('.')];
-          len === 2 && tmp.push(value);
-          return data[name[i]].attr.apply(data[name[i]], tmp);
-        } else {
-          data = data[name[i]];
-        }
-      } else {
-        if (len === 2) {
-          data = data[name[i]] = {};
-        } else {
-          break;
-        }
-      }
-    }
-    if (len === 1) {
-      return data ? data[prop] : undefined;
-    }
-    if (len === 2) {
-      tmp = data[prop];
-      data[prop] = value;
-      this.$change(key, value, tmp);
-    }
-    return this;
-  },
-  eachItem: function (args) {
-    let name = args[1] ? args[0] : null;
-    let callback = args[1] ? args[1] : args[0];
-    let value = name ? this.alt(name, []) : this.$data;
-    return {
-      value: sortObject(value),
-      isArray: isArray(value),
-      callback: callback
-    };
-  },
-  each: function () {
-    let each = this.eachItem(arguments);
-    forEach$1(each.value, function (value, key) {
-      each.callback(this.instance(value), value, key);
-    }, this);
-  },
-  attrs: function (props) {
-    this.$data = function callback(data, parent, path) {
-      let prop;
-      for (prop in data) {
-        if (data.hasOwnProperty(prop)) {
-          if (parent[prop] && isFunction(parent[prop]['attrs'])) {
-            parent[prop].attrs(data[prop], prop);
-          } else {
-            if (isArray(data[prop]) || isPlainObject(data[prop])) {
-              if (isArray(data[prop])) parent[prop] = parent[prop] || [];
-              if (isPlainObject(data[prop])) parent[prop] = parent[prop] || {};
-              callback.call(this, data[prop], parent[prop], prop);
-            } else {
-              parent[prop] = data[prop];
-            }
-          }
-          this.$change(path ? path.concat('.', prop) : prop, data[prop], parent[prop]);
-        }
-      }
-      return parent;
-    }.call(this, props, this.$data);
-    this.$update(props, this.$data);
-    return this;
-  },
-  serialize: function () {
-    return function callback(result, data) {
-      let prop;
-      for (prop in data) {
-        if (data.hasOwnProperty(prop)) {
-          if (data[prop] && isFunction(data[prop]['serialize'])) {
-            result[prop] = data[prop].serialize();
-          } else {
-            if (isArray(data[prop]) || isPlainObject(data[prop])) {
-              if (isArray(data[prop])) result[prop] = [];
-              if (isPlainObject(data[prop])) result[prop] = {};
-              callback.call(this, result[prop], data[prop]);
-            } else {
-              result[prop] = data[prop];
-            }
-          }
-        }
-      }
-      return result;
-    }.call(this, isArray(this.$data) ? [] : {}, this.$data);
-  },
-  stringify: function () {
-    return JSON.stringify(this.serialize());
-  }
-});
-/**
- * @template {string} T
- * @param {T} name
- * @param extend
- * @param [proto]
- */
-function createModel(name, extend, proto) {
-  if (modelRegistry[name]) {
-    return modelRegistry[name];
-  }
-  /**
-   * @type {extend & proto}
-   * @extends Model
-   */
-  modelRegistry[name] = (proto ? modelRegistry[extend] : Model).extend(proto ? proto : extend, name);
-  return modelRegistry[name];
-}
-
-/**
- * @template {string} T
- * @param {T} name
- * @param {object} [data]
- */
-function getModel(name, data) {
-  if (typeof modelRegistry[name] !== 'function') return;
-  return new modelRegistry[name](data);
-}
-
-/**
- *
- * @type {function(*, *=, *=): {}}
- */
-
-/**
- *
- * @type {RegExp}
- */
-const breaker = /[^\[\]]+|\[\]$/g;
-
-/**
- *
- * @param data
- * @param attr
- * @returns {*|null}
- */
-function attr(data, attr) {
-  var i = 0,
-    name = (attr || '').split('.'),
-    prop = name.pop();
-  for (; i < name.length; i++) {
-    if (data && data.hasOwnProperty(name[i])) {
-      data = data[name[i]];
-    } else {
-      break;
-    }
-  }
-  return data ? data[prop] : null;
-}
-
-/**
- *
- * @param obj
- * @returns {*}
- */
-function clean(obj) {
-  let prop;
-  for (prop in obj) {
-    if (obj.hasOwnProperty(prop)) {
-      if (obj[prop].length === 0) {
-        if (jQuery.isArray(obj)) obj.splice(prop, 1);
-        if (jQuery.isPlainObject(obj)) delete obj[prop];
-      } else if (typeof obj[prop] == 'object') {
-        clean(obj[prop]);
-      }
-    }
-  }
-  return obj;
-}
-
-/**
- *
- * @param filter
- * @param coerce
- * @returns {*}
- */
-function getFormData(filter, coerce) {
-  let form = jQuery.map(this.serializeArray(), function (field) {
-    return [field.name, encodeURIComponent(field.value)].join('=');
-  }).join('&');
-  let params = deparam(form, coerce, false);
-  return filter === true ? clean(params) : params;
-}
-
-/**
- *
- * @param data
- * @returns {setFormData}
- */
-function setFormData(data) {
-  this.find('[name]').each(function () {
-    let current = jQuery(this);
-    let parts = current.attr('name').match(breaker);
-    let value = attr(data, parts.join('.'));
-    if (value) {
-      if (current.is(":radio")) {
-        if (current.val() === value) {
-          current.attr("checked", true);
-        }
-      } else if (current.is(":checkbox")) {
-        value = jQuery.isArray(value) ? value : [value];
-        if (jQuery.inArray(current.val(), value) > -1) {
-          current.attr("checked", true);
-        }
-      } else {
-        current.val(value);
-      }
-    }
-  });
-  return this;
 }
 
 const listPreload = {};
@@ -1198,53 +1256,17 @@ view.helper = function (name, func) {
 
 /**
  *
- * @param path
- * @returns {RegExp}
- */
-const pathToRegexp = function (path) {
-  let result,
-    keys = [],
-    parse = function (_, slsh, format, key, capture, opt) {
-      keys.push({
-        name: key,
-        optional: !!opt
-      });
-      slsh = slsh || '';
-      return '' + (opt ? '' : slsh) + '(?:' + (opt ? slsh : '') + (format || '') + (capture || format && '([^/.]+?)' || '([^/]+?)') + ')' + (opt || '');
-    };
-  path = path.concat('/?');
-  path = path.replace(/\/\(/g, '(?:/').replace(/\+/g, '__plus__').replace(/(\/)?(\.)?:(\w+)(?:(\(.*?\)))?(\?)?/g, parse).replace(/([\/.])/g, '\\$1').replace(/__plus__/g, '(.+)').replace(/\*/g, '(.*)').replace(/@num/g, '\\d+').replace(/@word/g, '\\w+');
-  result = new RegExp('^' + path + '$', '');
-  result.keys = keys;
-  return result;
-};
-/**
- *
- * @param regexp
- * @param path
- * @returns {{}|boolean}
- */
-const pathMatch = function (regexp, path) {
-  let key;
-  let match = regexp.exec(path);
-  let params = {};
-  if (!match) return false;
-  for (var i = 1, len = match.length; i < len; ++i) if (key = regexp.keys[i - 1]) params[key.name] = typeof match[i] === 'string' ? decodeURIComponent(match[i]) : match[i];
-  return params;
-};
-/**
- *
  * @type {{hashchange: listener.hashchange}}
  */
 const listener = {
   hashchange: function (run) {
-    urlLocation.bind(function () {
-      run(this.path());
+    UrlLocation.bind(function () {
+      run(UrlLocation.path());
     });
-    if (urlLocation.part(0) === '') {
-      urlLocation.assign('/');
+    if (UrlLocation.part(0) === '') {
+      UrlLocation.assign('/');
     } else {
-      run(urlLocation.path());
+      run(UrlLocation.path());
     }
   }
 };
@@ -1252,61 +1274,64 @@ const listener = {
  * @name RouterQueue
  */
 createModel('router.queue', {
-  init: function (response) {
+  init(response) {
+    this.callbacks = [];
     this.response = response;
-    this.start();
+    this.reset();
   },
-  start: function () {
+  reset() {
     this.list = {};
-    this.defer = jQuery.Deferred();
-    this.defer.progress(function (name, response) {
-      if (this.has(name)) {
-        this.complete(name, response);
-      }
-    });
+    this.callbacks.length = 0;
   },
   has(name) {
     return this.list.hasOwnProperty(name);
   },
-  empty: function () {
-    return jQuery.isEmptyObject(this.list);
+  empty() {
+    return Object.keys(this.list).length === 0;
   },
-  complete: function (name, value) {
+  complete(name, value) {
     this.remove(name);
     this.response.attr(name, value);
     if (this.empty()) {
-      this.defer.resolve();
-      this.start();
+      this.callbacks.forEach(callback => {
+        this.callbacks.splice(this.callbacks.indexOf(callback), 1);
+        callback();
+      });
     }
   },
-  remove: function (name) {
+  remove(name) {
     if (this.has(name)) {
       delete this.list[name];
     }
     return this;
   },
-  then: function (fn) {
+  then(fn) {
     if (this.empty()) {
       fn();
     } else {
-      this.defer.then(fn);
+      this.callbacks.push(fn);
     }
     return this;
   },
-  stop: function () {
-    Object.keys(this.list).forEach(function (name) {
+  stop() {
+    Object.keys(this.list).forEach(name => {
       this.remove(name);
-    }, this);
-    this.list = {};
-  },
-  add: function (name, defer) {
-    let queue = this;
-    queue.list[name] = defer.then(function (content) {
-      queue.defer.notifyWith(queue, [name, content]);
-    }, function () {
-      queue.defer.notifyWith(queue, [name]);
     });
-    return queue;
+    this.list = {};
+    this.callbacks.length = 0;
+  },
+  notify(name, response) {
+    if (this.has(name)) {
+      this.complete(name, response);
+    }
+  },
+  add(name, promise) {
+    this.list[name] = promise.then(content => {
+      this.notify(name, content);
+    }, () => {
+      this.notify(name);
+    });
+    return this;
   }
 });
 /**
@@ -1315,18 +1340,18 @@ createModel('router.queue', {
 createModel('router.response', {
   init: function (data) {
     this.extend(data);
-    this.__q = getModel('router.queue', this);
+    this.defer = getModel('router.queue', this);
   },
   queue: function (name, defer) {
-    this.__q.add(name, defer);
+    this.defer.add(name, defer);
     return this;
   },
   then: function (callback) {
-    this.__q.then(callback);
+    this.defer.then(callback);
     return this;
   },
   stop: function () {
-    this.__q.stop();
+    this.defer.stop();
     return this;
   },
   render: function (wrapper, template, data) {
@@ -1343,7 +1368,7 @@ createModel('router.response', {
  */
 createModel('router.request', {
   query: function () {
-    let query = urlLocation.query();
+    let query = UrlLocation.query();
     this.attr('query', query);
     return query;
   },
@@ -1367,7 +1392,7 @@ createModel('router.request', {
     this.attr('path', value);
   },
   params: function (data) {
-    data = jQuery.extend({}, this.alt('parent', {}), data);
+    data = Object.assign({}, this.alt('parent', {}), data || {});
     this.attr('params', data);
     this.attr('parent', data);
   }
@@ -1517,7 +1542,7 @@ BackupStorage.prototype = {
 const backupStorage = new BackupStorage();
 const StorageProvider = 'localStorage' in window && window['localStorage'] ? window['localStorage'] : backupStorage;
 
-const Cache = {
+const StorageCache = {
   storageProvider: StorageProvider,
   set: function (key, data, ttl) {
     ttl = new Date().getTime() + ttl * 1000 * 60;
@@ -1560,21 +1585,6 @@ const Cache = {
   }
 };
 
-jQuery.storageCache = Cache;
-jQuery.Class = Class;
-jQuery.Model = Model;
-jQuery.Control = Control;
-jQuery.Router = Router;
-jQuery.createClass = createClass;
-jQuery.getClass = getClass;
-jQuery.createModel = createModel;
-jQuery.getModel = getModel;
-jQuery.createControl = createControl;
-jQuery.initControl = initControl;
-jQuery.cleanControls = cleanControls;
-jQuery.location = urlLocation;
-jQuery.deparam = deparam;
-jQuery.ejs = view;
 jQuery.fn.setFormData = setFormData;
 jQuery.fn.getFormData = getFormData;
 jQuery.fn.initControls = function () {
@@ -1584,11 +1594,12 @@ jQuery.fn.initControls = function () {
 };
 
 exports.$ = jQuery;
-exports.Cache = Cache;
 exports.Class = Class;
 exports.Control = Control;
 exports.Model = Model;
 exports.Router = Router;
+exports.StorageCache = StorageCache;
+exports.UrlLocation = UrlLocation;
 exports.cleanControls = cleanControls;
 exports.createClass = createClass;
 exports.createControl = createControl;
@@ -1597,4 +1608,6 @@ exports.deparam = deparam;
 exports.getClass = getClass;
 exports.getModel = getModel;
 exports.initControl = initControl;
-exports.urlLocation = urlLocation;
+exports.pathMatch = pathMatch;
+exports.pathToRegexp = pathToRegexp;
+exports.view = view;
