@@ -1,4 +1,4 @@
-import {resolve, commonjs, babel, terser, copy} from '@kosatyi/rollup'
+import { resolve, commonjs, babel, terser, copy } from '@kosatyi/rollup'
 import pkg from './package.json'
 
 const terserOptions = {
@@ -16,7 +16,7 @@ export default {
         {
             file: pkg.module,
             format: 'esm',
-            exports: 'named'
+            exports: 'named',
         },
         {
             file: pkg.main,
@@ -25,36 +25,34 @@ export default {
         },
         {
             file: pkg.browser,
-            name: 'jQueryControl',
+            name: 'jqctrl',
             format: 'umd',
         },
         {
             file: pkg.minified,
-            name: 'jQueryControl',
+            name: 'jqctrl',
             format: 'umd',
             sourcemap: true,
-            plugins: [
-                terser(terserOptions),
-            ]
-        }
+            plugins: [terser(terserOptions)],
+        },
     ],
     plugins: [
         commonjs(),
         resolve({
-            browser: true
+            browser: true,
         }),
         babel({
-            babelHelpers: 'bundled'
+            babelHelpers: 'bundled',
         }),
         copy({
             targets: [
                 {
                     src: 'package.cjs.json',
                     dest: 'dist/cjs',
-                    rename: ()=>  'package.json' ,
+                    rename: () => 'package.json',
                 },
             ],
             copyOnce: true,
-        })
+        }),
     ],
 }
