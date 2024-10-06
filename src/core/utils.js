@@ -92,6 +92,22 @@ export function compareArrays(a1, a2) {
 
 /**
  *
+ * @param a
+ * @param b
+ * @return {boolean}
+ */
+export function arrayEqual(a, b) {
+    if (a === b) return true
+    if (a == null || b == null) return false
+    if (a.length !== b.length) return false
+    for (let i = 0; i < a.length; ++i) {
+        if (a[i] !== b[i]) return false
+    }
+    return true
+}
+
+/**
+ *
  * @param path
  * @return {RegExp}
  */

@@ -1,4 +1,4 @@
-import $ from './jquery'
+import { jQuery } from './jquery'
 import { Class } from './class'
 import {
     isArray,
@@ -17,22 +17,25 @@ const modelRegistry = {}
  * @type {Class|*}
  */
 const Model = Class.extend({
-    init: function (data) {
+    forEach,
+    init(data) {
         this.extend(data)
     },
-    extend: function (data) {
+    extend(data) {
         if (data) {
             this.$data = data
         } else {
             this.$data = {}
         }
     },
-    alt: function (prop, defaults) {
+    alt(prop, defaults) {
         prop = this.attr(prop)
-        return typeof prop === 'undefined' ? defaults : prop
+        return prop === undefined || prop === null || prop === ''
+            ? defaults
+            : prop
     },
     defer() {
-        return $.Deferred()
+        return jQuery.Deferred()
     },
     resolve() {
         return this.defer().resolve(this)
@@ -85,7 +88,7 @@ const Model = Class.extend({
     },
     each() {
         let each = this.eachItem(arguments)
-        forEach(
+        this.forEach(
             each.value,
             function (value, key) {
                 each.callback(this.instance(value), value, key)

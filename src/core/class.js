@@ -95,9 +95,8 @@ Class.extend = function extend(instance, name) {
     function Class() {
         if (!initState.value && this.init) this.init.apply(this, arguments)
     }
-
     Class.prototype = assign(this, instance)
-    Class.prototype.name = name
+    Class.prototype.$className = name
     Class.prototype.constructor = Class
     Class.extend = extend
     return Class

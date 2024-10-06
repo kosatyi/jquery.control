@@ -1,8 +1,5 @@
 /**
  * @external jQuery
- * @type function
+ * @type {jQuery}
  */
-const jQuery = window['jQuery']
-
-
-export default jQuery
+export const jQuery = window['jQuery']

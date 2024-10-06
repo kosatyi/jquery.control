@@ -1,15 +1,11 @@
-import {deparam} from "./deparam";
-import {isPlainObject,isArray,isFunction} from './utils'
-/**
- *
- * @type {function(*, *=, *=): {}}
- */
+import { deparam } from './deparam'
+import { isPlainObject, isArray } from './utils'
 
 /**
  *
  * @type {RegExp}
  */
-const breaker = /[^\[\]]+|\[\]$/g;
+const breaker = /[^\[\]]+|\[\]$/g
 
 /**
  *
@@ -20,15 +16,15 @@ const breaker = /[^\[\]]+|\[\]$/g;
 function attr(data, attr) {
     let i = 0,
         name = (attr || '').split('.'),
-        prop = name.pop();
+        prop = name.pop()
     for (; i < name.length; i++) {
         if (data && data.hasOwnProperty(name[i])) {
-            data = data[name[i]];
+            data = data[name[i]]
         } else {
-            break;
+            break
         }
     }
-    return data ? data[prop] : null;
+    return data ? data[prop] : null
 }
 
 /**
@@ -37,18 +33,18 @@ function attr(data, attr) {
  * @returns {*}
  */
 export function clean(obj) {
-    let prop;
+    let prop
     for (prop in obj) {
         if (obj.hasOwnProperty(prop)) {
             if (obj[prop].length === 0) {
-                if(isArray(obj)) obj.splice(prop, 1);
-                if(isPlainObject(obj)) delete obj[prop];
-            } else if (typeof (obj[prop]) == 'object') {
-                clean(obj[prop]);
+                if (isArray(obj)) obj.splice(prop, 1)
+                if (isPlainObject(obj)) delete obj[prop]
+            } else if (typeof obj[prop] == 'object') {
+                clean(obj[prop])
             }
         }
     }
-    return obj;
+    return obj
 }
 
 /**
@@ -57,12 +53,12 @@ export function clean(obj) {
  * @param coerce
  * @returns {*}
  */
-export function getFormData(filter,coerce){
-    let form   = this.serializeArray().map(function(field){
-        return [field.name, encodeURIComponent(field.value)].join('=')
-    }).join('&');
-    let params = deparam(form, coerce, false);
-    return filter === true ? clean(params) : params;
+export function getFormData(filter, coerce) {
+    let form = this.serializeArray()
+        .map((field) => [field.name, encodeURIComponent(field.value)].join('='))
+        .join('&')
+    let params = deparam(form, coerce, false)
+    return filter === true ? clean(params) : params
 }
 
 /**
@@ -70,26 +66,25 @@ export function getFormData(filter,coerce){
  * @param data
  * @returns {setFormData}
  */
-export function setFormData( data ) {
-    this.find('[name]').each(function(index,element){
-        let current = $(element);
-        let parts = current.attr('name').match(breaker);
-        let value = attr(data,parts.join('.'));
+export function setFormData(data) {
+    this.find('[name]').each((index, element) => {
+        let current = this.find(element)
+        let parts = current.attr('name').match(breaker)
+        let value = attr(data, parts.join('.'))
         if (value) {
-            if (current.is(":radio")) {
+            if (current.is(':radio')) {
                 if (current.val() === value) {
-                    current.attr("checked", true);
+                    current.attr('checked', true)
                 }
-            } else if (current.is(":checkbox")) {
-                value = isArray(value) ? value : [value];
+            } else if (current.is(':checkbox')) {
+                value = isArray(value) ? value : [value]
                 if (value.indexOf(current.val()) > -1) {
-                    current.attr("checked", true);
+                    current.attr('checked', true)
                 }
             } else {
-                current.val(value);
+                current.val(value)
             }
         }
-    });
-    return this;
+    })
+    return this
 }
-
