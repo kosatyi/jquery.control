@@ -288,11 +288,6 @@ function deparam(params, coerce, spaces) {
 
 /**
  *
- * @type {function(*, *=, *=): {}}
- */
-
-/**
- *
  * @type {RegExp}
  */
 const breaker = /[^\[\]]+|\[\]$/g;
@@ -344,9 +339,7 @@ function clean(obj) {
  * @returns {*}
  */
 function getFormData(filter, coerce) {
-  let form = this.serializeArray().map(function (field) {
-    return [field.name, encodeURIComponent(field.value)].join('=');
-  }).join('&');
+  let form = this.serializeArray().map(field => [field.name, encodeURIComponent(field.value)].join('=')).join('&');
   let params = deparam(form, coerce, false);
   return filter === true ? clean(params) : params;
 }
@@ -357,19 +350,19 @@ function getFormData(filter, coerce) {
  * @returns {setFormData}
  */
 function setFormData(data) {
-  this.find('[name]').each(function (index, element) {
-    let current = $(element);
+  this.find('[name]').each((index, element) => {
+    let current = this.find(element);
     let parts = current.attr('name').match(breaker);
     let value = attr(data, parts.join('.'));
     if (value) {
-      if (current.is(":radio")) {
+      if (current.is(':radio')) {
         if (current.val() === value) {
-          current.attr("checked", true);
+          current.attr('checked', true);
         }
-      } else if (current.is(":checkbox")) {
+      } else if (current.is(':checkbox')) {
         value = isArray(value) ? value : [value];
         if (value.indexOf(current.val()) > -1) {
-          current.attr("checked", true);
+          current.attr('checked', true);
         }
       } else {
         current.val(value);
