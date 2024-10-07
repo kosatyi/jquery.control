@@ -1,4 +1,4 @@
-import { $ } from './jquery'
+import { jQuery } from './jquery'
 import { Class } from './class'
 import { initControl } from './control'
 
@@ -231,7 +231,7 @@ const template = Class.extend({
         return element
     },
     extend: function (data) {
-        return $.extend({}, this, data || {}, helpers)
+        return jQuery.extend({}, this, data || {}, helpers)
     },
 })
 /**
@@ -361,8 +361,8 @@ view.resolver = resolver
 view.preload = function (url) {
     listPreload[url] =
         listPreload[url] ||
-        $.get(url).then(function (content) {
-            $.extend(listView, content)
+        jQuery.get(url).then(function (content) {
+            jQuery.extend(listView, content)
         })
     return listPreload[url]
 }
