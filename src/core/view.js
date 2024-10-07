@@ -1,4 +1,4 @@
-import $ from './jquery'
+import { $ } from './jquery'
 import { Class } from './class'
 import { initControl } from './control'
 
