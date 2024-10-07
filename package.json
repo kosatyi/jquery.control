@@ -2,7 +2,7 @@
   "name": "jquery.control",
   "license": "MIT",
   "description": "jQuery Control",
-  "version": "0.0.30",
+  "version": "0.0.31",
   "devDependencies": {
     "@babel/core": "^7.20.12",
     "@babel/preset-env": "^7.20.2",
