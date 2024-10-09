@@ -372,7 +372,7 @@ function setFormData(data) {
   return this;
 }
 
-let skip = false;
+let silenceEvent = false;
 const UrlLocation = {
   prefix: '#',
   type: 'hash',
@@ -383,47 +383,71 @@ const UrlLocation = {
     location[replace === true ? 'replace' : 'assign'](url);
     return this;
   },
-  normalize: function (url) {
-    let prefix = this.prefix;
-    if (url.indexOf('http') === 0) prefix = '';else if (url.indexOf('#') === 0) prefix = '';
+  getSilence() {
+    return silenceEvent;
+  },
+  setSilence(value) {
+    silenceEvent = Boolean(value);
+    return this;
+  },
+  normalize(url) {
+    let prefix = String(this.prefix);
+    if (url.indexOf('http') === 0) prefix = '';else if (url.indexOf(prefix) === 0) prefix = '';
     return [prefix, url].join('');
   },
-  assign: function (url, silent) {
-    skip = silent;
-    return this.url(this.normalize(url));
+  assign(url, silence) {
+    return this.setSilence(silence).url(this.normalize(url), false);
   },
-  replace: function (url, silent) {
-    skip = silent;
-    return this.url(this.normalize(url), true);
+  replace(url, silence) {
+    return this.setSilence(silence).url(this.normalize(url), true);
   },
-  href: function () {
+  route(route, silence) {
+    const url = this.normalize(route);
+    if (this.href() !== url) {
+      return this.setSilence(silence).url(url, false);
+    }
+    return this.reload();
+  },
+  reload() {
+    return this.setSilence(false).change();
+  },
+  origin() {
+    return location.origin;
+  },
+  host() {
+    return location.host;
+  },
+  href() {
     return location[this.type].slice(1);
   },
-  part: function (index) {
+  indexOf(str, index) {
+    return this.href().indexOf(str) === index;
+  },
+  part(index) {
     return this.href().split('#')[0].split('?')[index] || '';
   },
-  query: function (value, replace, silent) {
+  query(value, replace, silence) {
     if (arguments.length) {
       value = value ? [this.part(0), $.param(value)].join('?') : this.part(0);
-      this[replace ? 'replace' : 'assign'](value, silent);
+      this[replace ? 'replace' : 'assign'](value, silence);
     } else {
       return deparam(this.part(1));
     }
   },
-  path: function (value, replace, silent) {
+  path(value, replace, silence) {
     if (arguments.length) {
       value = this.part(1) ? [value, this.part(1)].join('?') : value || '/';
-      this[replace ? 'replace' : 'assign'](value, silent);
+      this[replace ? 'replace' : 'assign'](value, silence);
     } else {
       return this.part(0);
     }
   },
-  json: function (value, replace, silent) {
+  json(value, replace, silence) {
     let href = this.href();
     let chunk = href.split('#')[0].split('?')[1] || '{}';
     if (arguments.length) {
       value = value ? [this.part(0), JSON.stringify(value)].join('?') : this.part(0);
-      this[replace ? 'replace' : 'assign'](value, silent);
+      this[replace ? 'replace' : 'assign'](value, silence);
     } else {
       try {
         chunk = decodeURIComponent(chunk);
@@ -434,7 +458,7 @@ const UrlLocation = {
       return chunk;
     }
   },
-  bind: function (callback) {
+  bind(callback) {
     this.callbacks.push(callback);
     this.changeHandler = this.changeHandler || this.change.bind(this);
     if (this.initialize === false) {
@@ -442,27 +466,19 @@ const UrlLocation = {
       this.initialize = true;
     }
   },
-  unbind: function (callback) {
+  unbind(callback) {
     this.callbacks.splice(this.callbacks.indexOf(callback), 1);
   },
-  host: function () {
-    return location.host;
-  },
-  indexOf: function (str, index) {
-    return this.href().indexOf(str) === index;
-  },
-  change: function () {
-    let index;
-    if (skip === true) {
-      return skip = false;
-    }
+  change() {
+    if (this.getSilence()) return this.setSilence(false);
     if (this.callbacks.length) {
-      for (index in this.callbacks) {
+      for (const index in this.callbacks) {
         if (this.callbacks.hasOwnProperty(index)) {
           this.callbacks[index].call(this);
         }
       }
     }
+    return this;
   }
 };
 
