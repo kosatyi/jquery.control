@@ -173,6 +173,12 @@ const Control = Class.extend({
         this._event_('off', arguments)
         return this
     },
+    trigger(name) {
+        const params = this.toArray(arguments).slice(1)
+        const event = jQuery.Event(name)
+        this.element.trigger.apply(this.element, [event].concat(params))
+        return event
+    },
     delay(callback, time) {
         callback = this.proxy(callback, true)
         const params = [callback, time].concat(Array.from(arguments).slice(2))
