@@ -65,7 +65,7 @@ const Model = Class.extend({
                 if (setter) {
                     data = data[chunk] = {}
                 } else {
-                    break
+                    return undefined
                 }
             }
         }

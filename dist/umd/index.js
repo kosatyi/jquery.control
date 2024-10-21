@@ -535,7 +535,7 @@
             if (setter) {
               data = data[chunk] = {};
             } else {
-              break;
+              return undefined;
             }
           }
         }

@@ -40,8 +40,6 @@ jQuery.fn.initControls = function () {
     })
 }
 
-const config = (function () {})({})
-
 export { jQuery as $ }
 
 export {
