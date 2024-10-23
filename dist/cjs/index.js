@@ -1,7 +1,5 @@
 'use strict';
 
-Object.defineProperty(exports, '__esModule', { value: true });
-
 /**
  * @external jQuery
  * @type {jQuery}
@@ -514,29 +512,20 @@ const Model = Class.extend({
     return this.defer().resolve(this);
   },
   attr(key, value) {
-    let setter = arguments.length > 1;
-    let data = this.$data;
-    let name = (key || '').split('.');
-    let prop = name.pop();
-    for (let i = 0; i < name.length; i++) {
-      let chunk = name[i];
-      if (data && data.hasOwnProperty(chunk)) {
-        let item = data[chunk];
-        if (isFunction(item.attr)) {
-          let args = [key.split('.').slice(i + 1).join('.')];
-          setter && args.push(value);
-          return item.attr.apply(item, args);
-        } else {
-          data = data[chunk];
-        }
-      } else {
-        if (setter) {
-          data = data[chunk] = {};
-        } else {
-          return undefined;
+    const setter = arguments.length > 1;
+    const path = key.split('.');
+    const prop = path.pop();
+    const data = path.reduce((data, name) => {
+      if (data && data[name] && data[name].$data) {
+        return data[name].$data;
+      }
+      if (setter) {
+        if (data[name] === null || typeof data[name] !== 'object') {
+          data[name] = {};
         }
       }
-    }
+      return data ? data[name] : undefined;
+    }, this.$data);
     if (setter) {
       data[prop] = value;
     } else {
@@ -1552,7 +1541,7 @@ const StorageCache = {
   }
 };
 
-jQuery.storageCache = Cache;
+jQuery.StorageCache = StorageCache;
 jQuery.Class = Class;
 jQuery.Model = Model;
 jQuery.Control = Control;
