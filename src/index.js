@@ -16,7 +16,7 @@ import {
     initControls,
 } from './core/control'
 
-jQuery.storageCache = Cache
+jQuery.StorageCache = StorageCache
 jQuery.Class = Class
 jQuery.Model = Model
 jQuery.Control = Control
