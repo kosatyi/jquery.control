@@ -6,8 +6,6 @@ import { UrlLocation } from './core/location'
 import { createModel, getModel, Model } from './core/model'
 import { deparam } from './core/deparam'
 import { Router } from './core/router'
-import { view } from './core/view'
-import { StorageCache } from './utils/cache'
 import {
     cleanControls,
     Control,
@@ -15,23 +13,7 @@ import {
     initControl,
     initControls,
 } from './core/control'
-
-jQuery.StorageCache = StorageCache
-jQuery.Class = Class
-jQuery.Model = Model
-jQuery.Control = Control
-jQuery.Router = Router
-jQuery.createClass = createClass
-jQuery.getClass = getClass
-jQuery.createModel = createModel
-jQuery.getModel = getModel
-jQuery.createControl = createControl
-jQuery.initControl = initControl
-jQuery.cleanControls = cleanControls
-jQuery.location = UrlLocation
-jQuery.deparam = deparam
-jQuery.ejs = view
-
+//
 jQuery.fn.setFormData = setFormData
 jQuery.fn.getFormData = getFormData
 jQuery.fn.initControls = function () {
@@ -39,17 +21,15 @@ jQuery.fn.initControls = function () {
         initControls(element)
     })
 }
-
-export { jQuery as $ }
-
+//
 export {
+    jQuery as $,
     deparam,
     Class,
     UrlLocation,
     Model,
     Control,
     Router,
-    StorageCache,
     pathToRegexp,
     pathMatch,
     createClass,

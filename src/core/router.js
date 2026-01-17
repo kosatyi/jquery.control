@@ -261,8 +261,9 @@ const Router = createClass('router', {
         if (
             typeof callback === 'string' &&
             typeof listener[callback] === 'function'
-        )
+        ) {
             callback = listener[callback]
+        }
         callback(
             (function (that) {
                 return function (path) {

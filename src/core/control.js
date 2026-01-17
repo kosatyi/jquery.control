@@ -3,8 +3,8 @@ import { Class, newInstance } from './class'
 import { arrayEqual, forEach } from './utils'
 
 /**
- *
- * @type {{string:Control}}
+ * @template {string} T
+ * @type {{T:Control}}
  */
 const controlRegistry = {}
 const controls = []
@@ -208,7 +208,7 @@ const Control = Class.extend({
         this.element.removeData()
     },
     canBeDestroyed() {
-        return jQuery.contains(document, this.element.get(0)) === false
+        return document.contains(this.element.get(0)) === false
     },
 })
 
@@ -252,7 +252,6 @@ function createControl(name, extend, proto) {
 }
 
 /**
- * @template {string} T
  * @param {T} name
  * @returns {controlRegistry[T] & Control}
  */
